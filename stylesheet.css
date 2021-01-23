@@ -14,17 +14,30 @@ body {
 	z-index: 1;
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2)
 }
-
-.menu {
+.uploader {
 	position: fixed;
 	margin-top: 105px;
 	padding: 0;
+	padding-left: 4px;
 	width: 200px;
 	border-style: solid;
 	border-width: 3px;
 	border-color: SlateBlue;
 	background-color: #f1f1f1;
-	height: 81%;
+	height: 15%;
+	z-index: 1;
+}	
+.menu {
+	position: fixed;
+	margin-top: 236px;
+	padding: 0;
+	padding-left: 4px;
+	width: 200px;
+	border-style: solid;
+	border-width: 3px;
+	border-color: SlateBlue;
+	background-color: #f1f1f1;
+	height: 64%;
 	z-index: 1;
 }	
 
@@ -52,7 +65,7 @@ li a:hover {
 .pictures {
 	position: fixed;
 	margin-top: 105px;
-	margin-left: 210px;
+	margin-left: 213px;
 	padding: 10px;
 	width: 75%;
 	border-style: solid;
