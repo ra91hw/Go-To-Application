@@ -14,9 +14,25 @@ body {
 	z-index: 1;
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2)
 }
-.uploader {
+
+.login {
 	position: fixed;
 	margin-top: 105px;
+	padding: 0;
+	padding-top: 5px;
+	padding-left: 4px;
+	width: 200px;
+	border-style: solid;
+	border-width: 3px;
+	border-color: SlateBlue;
+	background-color: #f1f1f1;
+	height: 5%;
+	z-index: 1;
+}	
+
+.uploader {
+	position: fixed;
+	margin-top: 160px;
 	padding: 0;
 	padding-left: 4px;
 	width: 200px;
@@ -29,15 +45,16 @@ body {
 }	
 .menu {
 	position: fixed;
-	margin-top: 236px;
+	margin-top: 290px;
 	padding: 0;
 	padding-left: 4px;
+	padding-bottom: 2px;
 	width: 200px;
 	border-style: solid;
 	border-width: 3px;
 	border-color: SlateBlue;
 	background-color: #f1f1f1;
-	height: 64%;
+	height: 57%;
 	z-index: 1;
 }	
 
@@ -60,7 +77,7 @@ li a {
 li a:hover {
   background-color: #555;
   color: white;
-}	
+}
 
 .pictures {
 	position: fixed;
