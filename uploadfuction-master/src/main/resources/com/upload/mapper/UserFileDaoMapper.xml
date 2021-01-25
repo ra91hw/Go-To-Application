@@ -1,0 +1,38 @@
+
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.upload.dao.UserFileDao">
+
+
+<!--Implement UserFileDao-->
+<!--Query the photo information of the current user based on the user ID-->
+<select id="findByUserID" parameterType="Integer" resultType="UserFile">
+select  id,oldFilename,newFilename,ext,path,size,type,isImg,downloadcounts,uploadtime,userId
+from t_files
+where userId=#{id}
+</select>
+
+    <!--save photo information-->
+    <insert id="save" parameterType="UserFile" useGeneratedKeys="true" keyProperty="id">
+        insert  into t_files
+        values(#{id},#{oldFileName},#{newFileName},#{ext},#{path},#{size},#{type},#{isImg},#{downloadcounts},#{uploadtime},#{userId})
+    </insert>
+
+    <!--Get the photo information by ID-->
+    <select id="findById" parameterType="String" resultType="UserFile">
+      select id,oldFileName,newFileName,ext,path,size,type,isImg,downloadcounts,uploadtime,userId
+      from t_files
+      where id = #{id}
+    </select>
+
+    <!--Updates Downloads-->
+    <update id="update" parameterType="UserFile">
+     update t_files set downloadcounts = #{downloadcounts} where id=#{id}
+
+    </update>
+
+    <!--delete-->
+    <delete id="delete" parameterType="String">
+        delete from t_files where id=#{id}
+    </delete>
+
+</mapper>
