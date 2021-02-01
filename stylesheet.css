@@ -15,6 +15,54 @@ body {
 	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2)
 }
 
+
+/*positioning of slideshow */
+#slideshow {
+	width: 85%;
+	height: 28vw;
+	position: relative;
+}
+
+/* images for slideshow and increase size */
+#slideshow a img {
+	display: block;
+    width: 80%;
+    box-shadow: 3px 3px 10px rgb(74, 77, 85);
+    padding: 1.5vh;
+    align-content: center;
+    background-color: rgb(47, 87, 199);
+	height: 25vw;
+	margin-left: 10vw;
+	margin-right: auto;
+}
+
+/* Overlapping of images */
+#slideshow a {
+    left: 10%;
+    right: 10%;
+    top: 10px;
+    margin: 0 auto 10px auto;
+    position: absolute;
+}
+
+#slideshow a:nth-of-type(1) {
+    animation-name: fader;
+    animation-delay: 3.5s;
+    animation-duration: 1s;
+    z-index: 20;
+  }
+  #slideshow a:nth-of-type(2) {
+    z-index: 10;
+  }
+  #slideshow a:nth-of-type(n+3) {
+    display: none;
+  }
+
+  @keyframes fader {
+    from { opacity: 1.0; }
+    to   { opacity: 0.0; }
+  }
+
 .login {
 	position: fixed;
 	margin-top: 105px;
@@ -90,6 +138,7 @@ li a:hover {
 	border-color: SlateBlue;
 	height: 78%;
 	z-index: 1;
+	overflow: auto;
 }
 
 .logo {
