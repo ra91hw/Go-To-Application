@@ -1,5 +1,21 @@
+<?php
+//Test, creates a cookie showing the user as being logged in using the account with id 1234
+//$cookie_name = "userid";
+//$cookie_value = "1234";
+//setcookie($cookie_name, $cookie_value, time() + (86400 / 2), "/"); // 86400 = 1 day
+?>
+
 <!DOCTYPE html>
 <html>
+	<?php
+	//Check if the cookies currently record the user as being logged in
+	if(isset($_COOKIE["userid"])){
+		$loggedin = True; //Logged in as user with the userid value
+		$userid =$_COOKIE["userid"];
+	} else{
+		$loggedin = False;
+	}
+	?>
 	<head>
 		<title>Go-To</title>
 		<!-- basic meta data for webpage -->
@@ -30,7 +46,13 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 		
 		<section id="Login">
 			<div id="login" class="login">
-				<ul> <li> <a href="login.html">Log in / Register</a> </li> </ul>
+				<?php
+				if ($loggedin){
+					//echo "<ul> <li> <p>Welcome, " . SQL QUERY NEEDED HERE TO FIND NAME . "</p> </li> </ul>";
+				} else{
+					echo "<ul> <li> <a href="login.html">Log in / Register</a> </li> </ul>";
+				}
+				?>
 			</div>
 		</section>
 		
@@ -69,8 +91,12 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 				
 						<h1>Content from Database will go here.</h1>
 						<?php $connection = mysql_connect('localhost', 'root', '');
-							$userid = 1234; //User ID goes here. Obviously this will need to actually be set to the logged in user, or be null, not just hardcoded like that.
-							$usermod = False; //This will need to work out if the user is a moderator, using the database.
+							//Check if the currently logged in user is a moderator
+							//if (!$loggedin){
+							//$usermod = False; 
+							//} else{
+								mysql_query("SELECT moderator FROM t_users WHERE ");
+							}//This will need to work out if the user is a moderator, using the database.
 							mysql_select_db('database'); //Similarly, this needs updated to reflect the database name.
 
 							$query = "SELECT CONCAT(newFileName, '.', ext) AS imgname, userId FROM t_files LIMIT 20"; //Gets 20 file names including extension
