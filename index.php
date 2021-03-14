@@ -15,6 +15,12 @@
 	} else{
 		$loggedin = False;
 	}
+	//Set up SQL connection
+	$connection = mysql_connect('localhost', 'root', '');
+	mysql_select_db('database');
+	if($loggedin){
+		$username = mysql_query("SELECT username FROM t_user WHERE id=" . $userid . ";");
+	}
 	?>
 	<head>
 		<title>Go-To</title>
@@ -48,7 +54,7 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 			<div id="login" class="login">
 				<?php
 				if ($loggedin){
-					//echo "<ul> <li> <p>Welcome, " . SQL QUERY NEEDED HERE TO FIND NAME . "</p> </li> </ul>";
+					echo "<ul> <li> <p>Welcome, " . $username . "</p> </li> </ul>"; //NEEDS A LOG OUT OPTION
 				} else{
 					echo "<ul> <li> <a href="login.html">Log in / Register</a> </li> </ul>";
 				}
@@ -90,14 +96,14 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 					</div>
 				
 						<h1>Content from Database will go here.</h1>
-						<?php $connection = mysql_connect('localhost', 'root', '');
+						<?php 
 							//Check if the currently logged in user is a moderator
 							//if (!$loggedin){
 							//$usermod = False; 
 							//} else{
-								mysql_query("SELECT moderator FROM t_users WHERE ");
-							}//This will need to work out if the user is a moderator, using the database.
-							mysql_select_db('database'); //Similarly, this needs updated to reflect the database name.
+							//	mysql_query("SELECT moderator FROM t_users WHERE ");
+							//}//This will need to work out if the user is a moderator, using the database.
+							
 
 							$query = "SELECT CONCAT(newFileName, '.', ext) AS imgname, userId FROM t_files LIMIT 20"; //Gets 20 file names including extension
 							//NOTE: Tags have NOT yet been implemented on uploading. Once the database supports it, using "SELECT CONCAT(newFileName, '.', ext) AS imgname FROM t_files WHERE [tag field name] = [desired tag name] LIMIT 20" should work. This can be copied across each of the pages on the menu at the side (i.e. for what is currently listed as Ocean, Forest, Skyline and Animals
