@@ -56,7 +56,7 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 				if ($loggedin){
 					echo "<ul> <li> <p>Welcome, " . $username . "</p> </li> </ul>"; //NEEDS A LOG OUT OPTION
 				} else{
-					echo "<ul> <li> <a href="login.html">Log in / Register</a> </li> </ul>";
+					echo "<ul> <li> <a href='login.html'>Log in / Register</a> </li> </ul>";
 				}
 				?>
 			</div>
@@ -113,11 +113,11 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 							echo "<table>"; // begin table
 
 							while($image = mysql_fetch_array($result)){   // for each image returned
-							echo "<tr> <td> <img src = '" . $image['imgname'] . "'>";  //$image['index'] the index here is a field name
-							if ($usermod || $userid == $image['userId']){
-								echo "<p> DELETE </p>"
-							}
-							echo " </td> </tr>"
+								echo "<tr> <td> <img src = '" . $image['imgname'] . "'>";  //$image['index'] the index here is a field name
+								if ($usermod || $userid == $image['userId']){
+									echo "<p> DELETE </p>";
+								}
+							echo " </td> </tr>";
 							}
 
 							echo "</table>"; // end table
