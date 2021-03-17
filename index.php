@@ -105,7 +105,7 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 							//}//This will need to work out if the user is a moderator, using the database.
 							
 
-							$query = "SELECT CONCAT(newFileName, '.', ext) AS imgname, userId FROM t_files LIMIT 20"; //Gets 20 file names including extension
+							$query = "SELECT CONCAT(newFileName, '.', ext) AS imgname, t_user.username FROM t_files JOIN t_user ON t_files.userId=t_user.id LIMIT 20"; //Gets 20 file names including extension
 							//NOTE: Tags have NOT yet been implemented on uploading. Once the database supports it, using "SELECT CONCAT(newFileName, '.', ext) AS imgname FROM t_files WHERE [tag field name] = [desired tag name] LIMIT 20" should work. This can be copied across each of the pages on the menu at the side (i.e. for what is currently listed as Ocean, Forest, Skyline and Animals
 							//Another thing to add is the ability to cycle through the rest of the images beyond the first 20. To do this, it might be best to filter them out with PHP rather than in the SQL tag?
 							$result = mysql_query($query);
@@ -114,10 +114,7 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 
 							while($image = mysql_fetch_array($result)){   // for each image returned
 								echo "<tr> <td> <img src = '" . $image['imgname'] . "'>";  //$image['index'] the index here is a field name
-								if ($usermod || $userid == $image['userId']){
-									echo "<p> DELETE </p>";
-								}
-							echo " </td> </tr>";
+								echo "<p> Uploaded by " . $image['username'] . "</p></td> </tr>";
 							}
 
 							echo "</table>"; // end table
