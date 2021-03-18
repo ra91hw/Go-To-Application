@@ -1,0 +1,15 @@
+Calculate score:
+-When someone votes on a photo, make a new entry to the "votes" table
+-Check that there isn't already a result in this table before letting them vote again
+-Every hour, update the leaderboards with the top 10 users (and display the current user's position on the ranking when they're logged in)
+
+(These might require ajax as well as PHP and MySQL)
+Sign up:
+-Get username from text box 
+-Check that username is valid (if a MySQL error would be thrown by just trying to submit it, check that the count of users with that username is 0)
+-If so, post it to the table with a unique ID (or say the problem otherwise)
+
+Log in:
+-Check that username and password match the database (VERY VERY FAR FROM SECURE, but it'll be a lot faster to implement it this way and this way of logging in is mostly just for debugging), and if they do return the corresponding userid
+-Store a cookie called "userid" with the value of the matching userid
+
