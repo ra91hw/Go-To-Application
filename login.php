@@ -5,13 +5,33 @@
 //setcookie($cookie_name, $cookie_value, time() + (86400 / 2), "/"); // 86400 = 1 day
 
 //Set up SQL connection
-$connection = mysql_connect('localhost', 'root', '');
-mysql_select_db('userfiles');
+$connection = mysqli_connect('localhost', 'root', '', 'userfiles');
+
+if (mysqli_connect_errno()) {
+  echo "Failed to connect to MySQL: " . mysqli_connect_error();
+  exit();
+}
+
 if(isset($_COOKIE["userid"])){
 	header("Location: index.php");	//Redirect back to the main index. You can't log in or register if you're already logged in
 	die();
 }else{
 	$loggedin = False;
+}
+
+if(isset($_POST["username"]) && isset($_POST["password"])) {
+	$result = mysqli_query($connection, "SELECT userId FROM t_user WHERE username = " . $_POST["username"] . " AND password = " . $_POST["password"] . " LIMIT 1");
+	if (mysqli_num_rows($result) > 0){
+		//Credentials are valid
+		$row = mysqli_fetch_row($result);
+		//Create a cookie storing the currently logged in user
+		setcookie("userId", $row[0], time() + (86400 * 30), "/"); // 86400 = 1 day
+		
+		mysqli_free_result($result);
+		
+		header("Location: index.php");	//The cookie now shows that the user is logged in. Return to the main page.
+		die();
+	}
 }
 
 ?>
@@ -25,6 +45,18 @@ if(isset($_COOKIE["userid"])){
 	<!-- basic meta data for webpage -->
 	<meta charset="utf-8">
 	<meta name="Keywords" content="photos, sharing, tags, location">
+
+	<script>	
+	function validateSignUp() {
+		//var emailAd = document.forms["signUp"]["email"].value;
+		
+		//if (emailAd "") {
+		//	alert("Invalid email");
+		//	return false;
+		//}
+		return true;
+	}
+	</script>
 
 	<!-- import style sheet -->
 	<link rel="stylesheet" href="stylesheet.css">
@@ -84,11 +116,26 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 		<div id="pictures" class="pictures">
 			<div class="content">
 				
-	
+				<h1>Welcome. Sign up below!</h1>
+				
+				<form action = "<?php $_PHP_SELF ?>" onsubmit="return validateSignUp()" method = "POST" name = "signUp">
+				Email Address: <input type = "text" placeholder="example@email.com" name = "email" required><br>
+				Username: <input type = "text" placeholder="Enter Username" name = "username" required><br>
+				Password: <input type = "password" placeholder="**********" name = "password" required><br>
+				I have read and agreed to the <a href="tos.php" target="_blank">terms of service: <input type="checkbox" name="tos" required><br>
+				<input type = "submit">
+				</form>
+				
+				<h1>Or log in!</h1>
+				
+				<form action = "<?php $_PHP_SELF ?>" method = "POST" name = "signIn">
+				Username: <input type = "text" placeholder="Enter Username" name = "usernameS" required><br>
+				Password: <input type = "password" placeholder="**********" name = "passwordS" required><br>
+				<input type = "submit">
+				</form>
 
-				<!--Structurally inspired around the more basic elements of https://www.w3schools.com/howto/howto_css_login_form.asp-->
-				<h1>Welcome. Log in below.</h1>
-				<label for="username"><b>Username:</b></label>
+
+				<!-- CODE NOT IN USE <label for="username"><b>Username:</b></label>
 				<input type="text" placeholder="Enter Username / Email" name="username" required>
 				<label for="password"><b>Password:</b></label>
 				<input type="password" placeholder="**********" name="password" required>
@@ -112,7 +159,7 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 						service</a></label><br>
 				<br> <br>
 
-				<button type="button" onclick="alert('Register attempt');">Register</button>
+				<button type="button" onclick="alert('Register attempt');">Register</button>-->
 			</div>
 		</div>
 	</section>
