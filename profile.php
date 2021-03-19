@@ -100,16 +100,20 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 				
 						<h1>Images uploaded by <?php echo $username?>.</h1>
 						<?php 
-							
+							//Find the page number of results to display
+							$page = 0;	//Default to 0 to show first results
+							if (isset($_POST["page"])){	//Replace immediately if there's a different value
+								$page = $_POST["page"];
+							}
 
-							$query = "SELECT CONCAT(newFileName, '.', ext) AS imgname FROM t_files WHERE userid=" . $userid . " LIMIT 20"; //Gets 20 file names including extension, out of those uploaded by the currently logged in user
+							$query = "SELECT CONCAT(newFileName, '.', ext) AS imgname FROM t_files WHERE userid=" . $userid . " LIMIT 20 OFFSET " . ($page * 20); //Gets 20 file names including extension, out of those uploaded by the currently logged in user
 							$result = mysql_query($query);
 
 							echo "<table>"; // begin table
 
 							while($image = mysql_fetch_array($result)){   // for each image returned
-							echo "<tr> <td> <img src = '" . $image['imgname'] . "'>";  //$image['index'] the index here is a field name
-							echo " </td> </tr>"
+								echo "<tr> <td> <img src = '" . $image['imgname'] . "'>";  //$image['index'] the index here is a field name
+								echo " </td> </tr>"
 							}
 
 							echo "</table>"; // end table
