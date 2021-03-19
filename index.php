@@ -110,7 +110,7 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 								$page = $_POST["page"];
 							}
 
-							$query = "SELECT CONCAT(newFileName, '.', ext) AS imgname, t_user.username FROM t_files JOIN t_user ON t_files.userId=t_user.id LIMIT 20 OFFSET " . ($page*20); //Gets 20 file names including extension
+							$query = "SELECT CONCAT(newFileName, '.', ext) AS imgname, t_user.id AS userId, t_user.username AS username FROM t_files JOIN t_user ON t_files.userId=t_user.id LIMIT 20 OFFSET " . ($page*20); //Gets 20 file names including extension
 							
 							
 							//NOTE: Tags have NOT yet been implemented on uploading. Once the database supports it, using "SELECT CONCAT(newFileName, '.', ext) AS imgname FROM t_files WHERE [tag field name] = [desired tag name] LIMIT 20" should work. This can be copied across each of the pages on the menu at the side (i.e. for what is currently listed as Ocean, Forest, Skyline and Animals
@@ -121,7 +121,22 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 
 							while($image = mysql_fetch_array($result)){   // for each image returned
 								echo "<tr> <td> <img src = '" . $image['imgname'] . "'>";  //$image['index'] the index here is a field name
-								echo "<p> Uploaded by " . $image['username'] . "</p></td> </tr>";
+								echo "<p> Uploaded by " . $image['username'];
+								
+								if(file_exists ("/avatars/" . $image["userId"] . ".png")){
+									//User has a png avatar
+									echo "<img src='" . $image["userId"] . ".png' width='100' height='100'> </p></td> </tr>";
+								} elseif(file_exists ("/avatars/" . $image["userId"] . ".jpg")){
+									//User has a jpg avatar
+									echo "<img src='" . $image["userId"] . ".jpg' width='100' height='100'> </p></td> </tr>";
+								} elseif(file_exists ("/avatars/" . $image["userId"] . ".gif")){
+									//User has a gif avatar
+									echo "<img src='" . $image["userId"] . ".gif' width='100' height='100'> </p></td> </tr>";
+								} else{
+									//User does not have an avatar
+									//Display default
+									echo "<img src='/avatars/default.png' width='100' height='100'> </p></td> </tr>";
+								}
 							}
 
 							echo "</table>"; // end table
