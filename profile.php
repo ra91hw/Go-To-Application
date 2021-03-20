@@ -22,6 +22,14 @@ if (mysqli_connect_errno()) {
   exit();
 }
 
+//Find the page number of results to display
+if(isset($_GET["page"])){
+	//There's a certain page number of photos to use
+	$page = $_GET["page"];
+} else{
+	//Default to 0 to show first results
+	$page = 0;
+}
 ?>
 
 <!DOCTYPE html>
@@ -103,13 +111,7 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 			<div id="pictures" class="pictures">
 			<div class="content">
 			<h1>Images uploaded by <?php echo $username?>.</h1>
-			<?php 
-				//Find the page number of results to display
-				$page = 0;	//Default to 0 to show first results
-				if (isset($_POST["page"])){	//Replace immediately if there's a different value
-					$page = $_POST["page"];
-				}
-				
+			<?php 				
 				$query = "SELECT CONCAT(newFileName, '.', ext) AS imgname FROM t_files WHERE userId = " . $userId . " LIMIT 20 OFFSET " . ($page * 20); //Gets 20 file names including extension, out of those uploaded by the currently logged in user
 				$result = mysqli_query($connection, $query);
 
@@ -121,7 +123,23 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 				}
 
 				echo "</table>"; // end table
-
+				
+				$photoCount = mysqli_num_rows(mysqli_query($connection, "SELECT CONCAT(newFileName, '.', ext) AS imgname FROM t_files WHERE userId = " . $userId));
+				
+				//Have options to cycle through pages of results
+				echo "<form action = " . $_PHP_SELF . " method = 'GET'>";
+				if($page > 0){
+					//Not the first page - can go back any earlier!
+					//Display a previous page button, setting page to the current value of page - 1
+					echo "<button name='page' type='submit' value=" . ($page - 1) . ">Previous</button>";
+				}
+				if(($page + 1) * 20 < $photoCount){
+					//There are photos remaining
+					//Display a previous page button, setting page to the current value of page - 1
+					echo "<button name='page' type='submit' value=" . ($page + 1) . ">Next</button>";
+				}
+				echo "</form>";
+							
 				mysqli_close($connection);
 			?>
 			<h1> Content from Database above </h1>

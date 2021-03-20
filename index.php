@@ -16,6 +16,15 @@ if (mysqli_connect_errno()) {
   echo "Failed to connect to MySQL: " . mysqli_connect_error();
   exit();
 }
+
+//Find the page number of results to display
+if(isset($_GET["page"])){
+	//There's a certain page number of photos to use
+	$page = $_GET["page"];
+} else{
+	//Default to 0 to show first results
+	$page = 0;
+}
 ?>
 
 <!DOCTYPE html>
@@ -106,21 +115,9 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 				
 						<h1>Content from Database will go here.</h1>
 						<?php 
-							//Check if the currently logged in user is a moderator
-							//if (!$loggedin){
-							//$usermod = False; 
-							//} else{
-							//	mysql_query("SELECT moderator FROM t_users WHERE ");
-							//}//This will need to work out if the user is a moderator, using the database.
-							
-							//Find the page number of results to display
-							$page = 0;
-							if (isset($_POST["page"])){	//Replace immediately if there's a different value
-								$page = $_POST["page"];
-							}
-
 							$query = "SELECT CONCAT(newFileName, '.', ext) AS imgname, t_user.id AS userId, t_user.username AS username FROM t_files JOIN t_user ON t_files.userId=t_user.id LIMIT 20 OFFSET " . ($page*20); //Gets 20 file names including extension
 							
+							$photoCount = mysqli_num_rows(mysqli_query($connection, "SELECT CONCAT(newFileName, '.', ext) AS imgname, t_user.id AS userId, t_user.username AS username FROM t_files JOIN t_user ON t_files.userId=t_user.id"));
 							
 							//NOTE: Tags have NOT yet been implemented on uploading. Once the database supports it, using "SELECT CONCAT(newFileName, '.', ext) AS imgname FROM t_files WHERE [tag field name] = [desired tag name] LIMIT 20" should work. This can be copied across each of the pages on the menu at the side (i.e. for what is currently listed as Ocean, Forest, Skyline and Animals
 							//Another thing to add is the ability to cycle through the rest of the images beyond the first 20. To do this, it might be best to filter them out with PHP rather than in the SQL tag?
@@ -148,8 +145,23 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 								}
 							}
 
-							echo "</table>"; // end table
-
+							echo "</table> <br>"; // end table
+							
+							//Have options to cycle through pages of results
+							echo "<form action = " . $_PHP_SELF . " method = 'GET'>";
+							if($page > 0){
+								//Not the first page - can go back any earlier!
+								//Display a previous page button, setting page to the current value of page - 1
+								echo "<button name='page' type='submit' value=" . ($page - 1) . ">Previous</button>";
+							}
+							if(($page + 1) * 20 < $photoCount){
+								//There are photos remaining
+								//Display a previous page button, setting page to the current value of page - 1
+								echo "<button name='page' type='submit' value=" . ($page + 1) . ">Next</button>";
+							}
+							echo "</form>";
+							
+							//Finished with the database
 							mysqli_close($connection); ?>
 						<h1> Content from Database above </h1>
 				</div>
