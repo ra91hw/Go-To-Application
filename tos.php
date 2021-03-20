@@ -61,7 +61,7 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 			<div class="logo">
 				<h1>Go-To</h1>
 				<h2>Photos on the go</h2>
-				<img src="images-slideshow\Go-to logo.png" alt="logo">
+				<!--<img src="images-slideshow\Go-to logo.png" alt="logo">!-->
 			</div>
 		</div>
 	</section>
@@ -70,7 +70,7 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 		<div id="login" class="login">
 				<?php
 					if ($loggedin){
-						echo "<ul> <li> <a href="profile.php">Welcome, " . $username . "</a> </li> </ul>";
+						echo "<ul> <li> <a href='profile.php'>Welcome, " . $username . "</a> </li> </ul>";
 					} else{
 						echo "<ul> <li> <a href='login.php'>Log in / Register</a> </li> </ul>";
 					}

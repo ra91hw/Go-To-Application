@@ -62,7 +62,7 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 			<div id="login" class="login">
 				<?php
 				if ($loggedin){
-					echo "<ul> <li> <a href="profile.php">Welcome, " . $username . "</a> </li> </ul>"; //PROFILE PAGE NEEDS A LOG OUT OPTION
+					echo "<ul> <li> <a href='profile.php'>Welcome, " . $username . "</a> </li> </ul>"; //PROFILE PAGE NEEDS A LOG OUT OPTION
 				} else{
 					echo "<ul> <li> <a href='login.php'>Log in / Register</a> </li> </ul>";
 				}
@@ -131,19 +131,19 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 								echo "<tr> <td> <img src = '" . $image['imgname'] . "'>";  //$image['index'] the index here is a field name
 								echo "<p> Uploaded by " . $image['username'];
 								
-								if(file_exists ("/avatars/" . $image["userId"] . ".png")){
+								if(file_exists ("/Go-To-Application/avatars/" . $image["userId"] . ".png")){
 									//User has a png avatar
-									echo "<img src='" . $image["userId"] . ".png' width='100' height='100'> </p></td> </tr>";
-								} elseif(file_exists ("/avatars/" . $image["userId"] . ".jpg")){
+									echo "<img src='/Go-To-Application/avatars/" . $image["userId"] . ".png' width='100' height='100'> </p></td> </tr>";
+								} elseif(file_exists ("/Go-To-Application/avatars/" . $image["userId"] . ".jpg")){
 									//User has a jpg avatar
-									echo "<img src='" . $image["userId"] . ".jpg' width='100' height='100'> </p></td> </tr>";
-								} elseif(file_exists ("/avatars/" . $image["userId"] . ".gif")){
+									echo "<img src='/Go-To-Application/avatars/" . $image["userId"] . ".jpg' width='100' height='100'> </p></td> </tr>";
+								} elseif(file_exists ("/Go-To-Application/avatars/" . $image["userId"] . ".gif")){
 									//User has a gif avatar
-									echo "<img src='" . $image["userId"] . ".gif' width='100' height='100'> </p></td> </tr>";
+									echo "<img src='/Go-To-Application/avatars/" . $image["userId"] . ".gif' width='100' height='100'> </p></td> </tr>";
 								} else{
 									//User does not have an avatar
 									//Display default
-									echo "<img src='/avatars/default.png' width='100' height='100'> </p></td> </tr>";
+									echo "<img src='/Go-To-Application/avatars/default.png' width='100' height='100'> </p></td> </tr>";
 								}
 							}
 

@@ -93,7 +93,7 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 	<section id="Login">
 		<div id="login" class="login">
 			<ul>
-				<li> <a href="login.html">Log in / Register</a> </li>
+				<li> <a href="login.php">Log in / Register</a> </li>
 			</ul>
 		</div>
 	</section>
@@ -132,7 +132,7 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 				Email Address: <input type = "text" placeholder="example@email.com" name = "email" required><br>
 				Username: <input type = "text" placeholder="Enter Username" name = "username" required><br>
 				Password: <input type = "password" placeholder="**********" name = "password" required><br>
-				I have read and agreed to the <a href="tos.php" target="_blank">terms of service: <input type="checkbox" name="tos" required><br>
+				I have read and agreed to the <a href="tos.php" target="_blank">terms of service:</a> <input type="checkbox" name="tos" required><br>
 				<input type = "submit">
 				</form>
 				
