@@ -22,13 +22,14 @@ if (mysqli_connect_errno()) {
 <html>
 	<?php
 	//Check if the cookies currently record the user as being logged in
-	if(isset($_COOKIE["userid"])){
-		$loggedin = True; //Logged in as user with the userid value
-		$userid =$_COOKIE["userid"];
+	if(isset($_COOKIE["userId"])){
+		$loggedin = True; //Logged in as user with the userId value
+		$userId =$_COOKIE["userId"];
+		$result = mysqli_query($connection, "SELECT username FROM t_user WHERE id = " . $userId);
+		$username = mysqli_fetch_array($result)[0];
 	} else{
 		$loggedin = False;
 	}
-
 	?>
 	<head>
 		<title>Go-To</title>

@@ -21,10 +21,10 @@ if (mysqli_connect_errno()) {
 }
 
 //Check if the cookies currently record the user as being logged in
-if(isset($_COOKIE["userid"])){
-	$loggedin = True; //Logged in as user with the userid value
-	$userid =$_COOKIE["userid"];
-	$username = mysqli_query($connection, "SELECT username FROM t_user WHERE id=" . $userid . ";");
+if(isset($_COOKIE["userId"])){
+	$loggedin = True; //Logged in as user with the userId value
+	$userId =$_COOKIE["userId"];
+	$username = mysqli_fetch_array(mysqli_query($connection, "SELECT username FROM t_user WHERE id=" . $userId . ";"))[0];
 } else{
 	$loggedin = False;
 }

@@ -1,6 +1,6 @@
 <?php
 //Test, creates a cookie showing the user as being logged in using the account with id 1234
-//$cookie_name = "userid";
+//$cookie_name = "userId";
 //$cookie_value = "1234";
 //setcookie($cookie_name, $cookie_value, time() + (86400 / 2), "/"); // 86400 = 1 day
 
@@ -22,15 +22,6 @@ if (mysqli_connect_errno()) {
   exit();
 }
 
-if(!isset($_COOKIE["userid"])){
-	header("Location: index.php");	//Redirect back to the main index. There's nothing to show if the user isn't logged in.
-	die();
-}else{
-	$userid =$_COOKIE["userid"];
-	$loggedin = True;
-	$username = mysqli_query($connection, "SELECT username FROM t_user WHERE id=" . $userid . ";");
-}
-
 ?>
 
 <!DOCTYPE html>
@@ -50,10 +41,19 @@ if(!isset($_COOKIE["userid"])){
 integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 
 		<!-- import javascript -->
-		<script src="script.js"></script>
+		<!--<script src="script.js"></script> -->
 	</head>
 	<body>
-	
+		<?php
+			if(!isset($_COOKIE["userId"])){
+				header("Location: index.php");	//Redirect back to the main index. There's nothing to show if the user isn't logged in.
+				die();
+			}else{
+				$userId =$_COOKIE["userId"];
+				$loggedin = True;
+				$username = mysqli_fetch_array(mysqli_query($connection, "SELECT username FROM t_user WHERE id=" . $userId . ";"))[0];
+			}
+		?>
 		<section id="logo">
 			<div id="header" class="header">
 				<div class="logo">
@@ -65,17 +65,12 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 		
 		<section id="Login">
 			<div id="login" class="login">
-				<script>
-					function logout() {
-						//Delete the cookie storing who is logged in
-						//WARNING: IF THIS IS POSSIBLE, THEN IT IS PROBABLY POSSIBLE TO EDIT THE COOKIES TO "LOG IN" AS SOMEONE ELSE WITHOUT USING THE PASSWORD
-						//AJAX MIGHT NEED TO BE USED TO GET AROUND THIS
-						document.cookie = "userid=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-					} 
-				</script>
-				<ul> <li> <p> <a onClick='logout();' >Logged in as <?php echo $username ?>. Log out?</a> </p> </li> </ul>
-				
-				echo "<ul> <li> <p>Welcome, " . $username . "</p> </li> </ul>"; //NEEDS A LOG OUT OPTION
+				<?php
+				if ($loggedin){
+					echo "<ul> <li> <a href='profile.php'>Welcome, " . $username . "</a> </li> </ul>"; //PROFILE PAGE NEEDS A LOG OUT OPTION
+				} else{
+					echo "<ul> <li> <a href='login.php'>Log in / Register</a> </li> </ul>";
+				}
 				?>
 			</div>
 		</section>
@@ -106,35 +101,30 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 		
 		<section id="content">
 			<div id="pictures" class="pictures">
-				<div class="content">
-					<div id="slideshow">
-						<a><img src="images-slideshow\ocean.jpg" alt="ocean"></a>
-						<a><img src="images-slideshow\forest.jpg" alt="forest"></a>
-						<a><img src="images-slideshow\skyline.jpg" alt="skyline"></a>
-					</div>
+			<div class="content">
+			<h1>Images uploaded by <?php echo $username?>.</h1>
+			<?php 
+				//Find the page number of results to display
+				$page = 0;	//Default to 0 to show first results
+				if (isset($_POST["page"])){	//Replace immediately if there's a different value
+					$page = $_POST["page"];
+				}
 				
-						<h1>Images uploaded by <?php echo $username?>.</h1>
-						<?php 
-							//Find the page number of results to display
-							$page = 0;	//Default to 0 to show first results
-							if (isset($_POST["page"])){	//Replace immediately if there's a different value
-								$page = $_POST["page"];
-							}
+				$query = "SELECT CONCAT(newFileName, '.', ext) AS imgname FROM t_files WHERE userId = " . $userId . " LIMIT 20 OFFSET " . ($page * 20); //Gets 20 file names including extension, out of those uploaded by the currently logged in user
+				$result = mysqli_query($connection, $query);
 
-							$query = "SELECT CONCAT(newFileName, '.', ext) AS imgname FROM t_files WHERE userid=" . $userid . " LIMIT 20 OFFSET " . ($page * 20); //Gets 20 file names including extension, out of those uploaded by the currently logged in user
-							$result = mysqli_query($connection, $query);
+				echo "<table>"; // begin table
 
-							echo "<table>"; // begin table
+				while($image = mysqli_fetch_array($result)){   // for each image returned
+					echo "<tr> <td> <img src = '" . $image['imgname'] . "'>";  //$image['index'] the index here is a field name
+					echo " </td> </tr>";
+				}
 
-							while($image = mysqli_fetch_array($result)){   // for each image returned
-								echo "<tr> <td> <img src = '" . $image['imgname'] . "'>";  //$image['index'] the index here is a field name
-								echo " </td> </tr>"
-							}
+				echo "</table>"; // end table
 
-							echo "</table>"; // end table
-
-							mysqli_close($connection); ?>
-						<h1> Content from Database above </h1>
+				mysqli_close($connection);
+			?>
+			<h1> Content from Database above </h1>
 				</div>
 			</div>
 		</section>	

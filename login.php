@@ -1,6 +1,6 @@
 <?php
 //Test, creates a cookie showing the user as being logged in using the account with id 1234
-//$cookie_name = "userid";
+//$cookie_name = "userId";
 //$cookie_value = "1234";
 //setcookie($cookie_name, $cookie_value, time() + (86400 / 2), "/"); // 86400 = 1 day
 
@@ -22,25 +22,23 @@ if (mysqli_connect_errno()) {
   exit();
 }
 
-if(isset($_COOKIE["userid"])){
-	header("Location: index.php");	//Redirect back to the main index. You can't log in or register if you're already logged in
-	die();
-}else{
-	$loggedin = False;
-}
+$failedlogin = false;	//Right now, there's no reason to believe that there's a failed log in attempt. This may be changed later
 
-if(isset($_POST["username"]) && isset($_POST["password"])) {
-	$result = mysqli_query($connection, "SELECT userId FROM t_user WHERE username = " . $_POST["username"] . " AND password = " . $_POST["password"] . " LIMIT 1");
+if(isset($_POST["usernameS"]) && isset($_POST["passwordS"])) {
+	$result = mysqli_query($connection, "SELECT id FROM t_user WHERE username = '" . $_POST["usernameS"] . "' AND password = '" . $_POST["passwordS"] . "' LIMIT 1");
+	echo mysqli_error($connection);
 	if (mysqli_num_rows($result) > 0){
 		//Credentials are valid
 		$row = mysqli_fetch_row($result);
 		//Create a cookie storing the currently logged in user
 		setcookie("userId", $row[0], time() + (86400 * 30), "/"); // 86400 = 1 day
-		
 		mysqli_free_result($result);
 		
 		header("Location: index.php");	//The cookie now shows that the user is logged in. Return to the main page.
 		die();
+	}else{
+		//Recognise that there was an attempt to login, but it has not succeeded
+		$failedlogin = true;
 	}
 }
 
@@ -79,7 +77,14 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 </head>
 
 <body>
-
+	<?php
+		if(isset($_COOKIE["userId"])){
+			header("Location: index.php");	//Redirect back to the main index. You can't log in or register if you're already logged in
+			die();
+		}else{
+			$loggedin = False;
+		}
+	?>
 	<section id="logo">
 		<div id="header" class="header">
 			<div class="logo">
@@ -143,6 +148,12 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 				Password: <input type = "password" placeholder="**********" name = "passwordS" required><br>
 				<input type = "submit">
 				</form>
+				<?php 
+					if ($failedlogin){
+						//Notify the user that the login attempt has failed.
+						echo "<p>Incorrect credentials.</p>";
+					}
+				?>
 
 
 				<!-- CODE NOT IN USE <label for="username"><b>Username:</b></label>
