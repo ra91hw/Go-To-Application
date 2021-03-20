@@ -1,8 +1,10 @@
 <?php
-//Test, creates a cookie showing the user as being logged in using the account with id 1234
-//$cookie_name = "userid";
-//$cookie_value = "1234";
-//setcookie($cookie_name, $cookie_value, time() + (86400 / 2), "/"); // 86400 = 1 day
+//Set up SQL connection
+$connection = mysqli_connect('localhost', 'root', '', 'userfiles');
+if (mysqli_connect_errno()) {
+	echo "Failed to connect to MySQL: " . mysqli_connect_error();
+	exit();
+}
 ?>
 
 <!DOCTYPE html>
@@ -15,12 +17,7 @@
 	} else{
 		$loggedin = False;
 	}
-	//Set up SQL connection
-	$connection = mysql_connect('localhost', 'root', '');
-	mysql_select_db('database');
-	if($loggedin){
-		$username = mysql_query("SELECT username FROM t_user WHERE id=" . $userid . ";");
-	}
+
 	?>
 	<head>
 		<title>Go-To</title>
@@ -115,11 +112,11 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 							
 							//NOTE: Tags have NOT yet been implemented on uploading. Once the database supports it, using "SELECT CONCAT(newFileName, '.', ext) AS imgname FROM t_files WHERE [tag field name] = [desired tag name] LIMIT 20" should work. This can be copied across each of the pages on the menu at the side (i.e. for what is currently listed as Ocean, Forest, Skyline and Animals
 							//Another thing to add is the ability to cycle through the rest of the images beyond the first 20. To do this, it might be best to filter them out with PHP rather than in the SQL tag?
-							$result = mysql_query($query);
+							$result = mysqli_query($connection, $query);
 
 							echo "<table>"; // begin table
 
-							while($image = mysql_fetch_array($result)){   // for each image returned
+							while($image = mysqli_fetch_array($result)){   // for each image returned
 								echo "<tr> <td> <img src = '" . $image['imgname'] . "'>";  //$image['index'] the index here is a field name
 								echo "<p> Uploaded by " . $image['username'];
 								
@@ -141,7 +138,7 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 
 							echo "</table>"; // end table
 
-							mysql_close(); ?>
+							mysqli_close($connection); ?>
 						<h1> Content from Database above </h1>
 				</div>
 			</div>

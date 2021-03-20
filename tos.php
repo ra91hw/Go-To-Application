@@ -14,10 +14,13 @@ if (mysqli_connect_errno()) {
 if(isset($_COOKIE["userid"])){
 	$loggedin = True; //Logged in as user with the userid value
 	$userid =$_COOKIE["userid"];
-	$username = mysql_query("SELECT username FROM t_user WHERE id=" . $userid . ";");
+	$username = mysqli_query($connection, "SELECT username FROM t_user WHERE id=" . $userid . ";");
 } else{
 	$loggedin = False;
 }
+
+//Close connection now that username (if applicable) is known
+mysqli_close($connection);
 
 ?>
 

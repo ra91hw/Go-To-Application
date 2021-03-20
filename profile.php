@@ -5,15 +5,19 @@
 //setcookie($cookie_name, $cookie_value, time() + (86400 / 2), "/"); // 86400 = 1 day
 
 //Set up SQL connection
-$connection = mysql_connect('localhost', 'root', '');
-mysql_select_db('userfiles');
+$connection = mysqli_connect('localhost', 'root', '', 'userfiles');
+if (mysqli_connect_errno()) {
+  echo "Failed to connect to MySQL: " . mysqli_connect_error();
+  exit();
+}
+
 if(!isset($_COOKIE["userid"])){
 	header("Location: index.php");	//Redirect back to the main index. There's nothing to show if the user isn't logged in.
 	die();
 }else{
 	$userid =$_COOKIE["userid"];
 	$loggedin = True;
-	$username = mysql_query("SELECT username FROM t_user WHERE id=" . $userid . ";");
+	$username = mysqli_query($connection, "SELECT username FROM t_user WHERE id=" . $userid . ";");
 }
 
 ?>
@@ -107,18 +111,18 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 							}
 
 							$query = "SELECT CONCAT(newFileName, '.', ext) AS imgname FROM t_files WHERE userid=" . $userid . " LIMIT 20 OFFSET " . ($page * 20); //Gets 20 file names including extension, out of those uploaded by the currently logged in user
-							$result = mysql_query($query);
+							$result = mysqli_query($connection, $query);
 
 							echo "<table>"; // begin table
 
-							while($image = mysql_fetch_array($result)){   // for each image returned
+							while($image = mysqli_fetch_array($result)){   // for each image returned
 								echo "<tr> <td> <img src = '" . $image['imgname'] . "'>";  //$image['index'] the index here is a field name
 								echo " </td> </tr>"
 							}
 
 							echo "</table>"; // end table
 
-							mysql_close(); ?>
+							mysqli_close($connection); ?>
 						<h1> Content from Database above </h1>
 				</div>
 			</div>
