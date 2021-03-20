@@ -2,8 +2,18 @@
 //This barely needs to be a PHP file, an HTML file would almost work
 //But the cookie only stores the userId, so to display a welcome message, database access is required
 
+//Open database_login.csv, storing the login details to the mysql database
+//database_login.csv should contain 4 values:
+//	1. host
+//	2. username
+//	3. password
+//	4. database name
+$file = fopen("database_login.csv","r");
+$logindetails = fgetcsv($file);
+fclose($file);
+
 //Set up SQL connection
-$connection = mysqli_connect('localhost', 'root', '', 'userfiles');
+$connection = mysqli_connect($logindetails[0], $logindetails[1], $logindetails[2], $logindetails[3]);
 
 if (mysqli_connect_errno()) {
   echo "Failed to connect to MySQL: " . mysqli_connect_error();
