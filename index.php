@@ -56,6 +56,13 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 
 		<!-- import javascript -->
 		<script src="script.js"></script>
+		<script>
+			function signOut() {
+				//Set expiry date to the past so the login cookie disappears
+				document.cookie = "userId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+				window.location.replace("index.php");
+			}
+		</script>
 	</head>
 	<body>
 	

@@ -42,6 +42,37 @@ if(isset($_POST["usernameS"]) && isset($_POST["passwordS"])) {
 	}
 }
 
+if(isset($_POST["email"]) && isset($_POST["username"]) && isset($_POST["password"])) {
+	$failedsignup = false;
+	$result = mysqli_query($connection, "SELECT id FROM t_user WHERE username = '" . $_POST["username"] . "' LIMIT 1");
+	echo mysqli_error($connection);
+	if (mysqli_num_rows($result) == 0){
+		//Username is free
+		$row = mysqli_fetch_row($result);
+		
+		//Find an unused userId
+		$userId = rand(100, 100000000);
+		while(mysqli_num_rows(mysqli_query($connection, "SELECT * FROM t_user WHERE id = " . $userId . " LIMIT 1")) > 0){
+			//Try again if id is in use
+			$userId = rand(100, 100000000);
+		}
+		if (mysqli_query($connection, "INSERT INTO t_user (id, username, password, email) VALUES (" . $userId . ", " . $_POST["username"] . ", " . $_POST["password"] . ", " . $_POST["email"] . ")")){
+			//Create a cookie storing the currently logged in user
+			setcookie("userId", $userId, time() + (86400 * 30), "/"); // 86400 = 1 day
+			mysqli_free_result($result);
+			
+			header("Location: index.php");	//The cookie now shows that the user is logged in. Return to the main page.
+			die();
+		}else{
+			echo "Error signing up.";
+			die();
+		}
+	}else{
+		//Recognise that there was an attempt to sign up, but it has not succeeded
+		$failedsignup = true;
+		$signuperror = "Username in use!";
+	}
+}
 ?>
 
 
@@ -64,6 +95,13 @@ if(isset($_POST["usernameS"]) && isset($_POST["passwordS"])) {
 		//}
 		return true;
 	}
+	
+	function signOut() {
+		//Set expiry date to the past so the login cookie disappears
+		document.cookie = "userId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+		window.location.replace("index.php");
+	}
+	
 	</script>
 
 	<!-- import style sheet -->
@@ -134,13 +172,18 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 				
 				<h1>Welcome. Sign up below!</h1>
 				
-				<form action = "<?php $_PHP_SELF ?>" onsubmit="return validateSignUp()" method = "POST" name = "signUp">
+				<form action = "" method = "POST" name = "signUp">
 				Email Address: <input type = "text" placeholder="example@email.com" name = "email" required><br>
 				Username: <input type = "text" placeholder="Enter Username" name = "username" required><br>
 				Password: <input type = "password" placeholder="**********" name = "password" required><br>
 				I have read and agreed to the <a href="tos.php" target="_blank">terms of service:</a> <input type="checkbox" name="tos" required><br>
 				<input type = "submit">
 				</form>
+				<?php
+					if ($failedsignup){
+						
+					}
+				?>
 				
 				<h1>Or log in!</h1>
 				
@@ -155,33 +198,7 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 						echo "<p>Incorrect credentials.</p>";
 					}
 				?>
-
-
-				<!-- CODE NOT IN USE <label for="username"><b>Username:</b></label>
-				<input type="text" placeholder="Enter Username / Email" name="username" required>
-				<label for="password"><b>Password:</b></label>
-				<input type="password" placeholder="**********" name="password" required>
-				<button type="button" onclick="alert('Log in attempt');">Submit</button>
-
-				<h1>Or register.</h1>
-				<label for="email"><b>Email address:</b></label>
-				<input type="text" placeholder="Enter Email" name="email" required>
-				<br> <br>
-
-				<label for="username"><b>Username:</b></label>
-				<input type="text" placeholder="Enter Username" name="username" required>
-				<br> <br>
-
-				<label for="password"><b>Password: </b></label>
-				<input type="password" placeholder="**********" name="password" required>
-				<br> <br>
-
-				<input type="checkbox" id="tos" name="tos">
-				<label for="tos">I have read and agreed to the <a href="placeholder" target="_blank">terms of
-						service</a></label><br>
-				<br> <br>
-
-				<button type="button" onclick="alert('Register attempt');">Register</button>-->
+				
 			</div>
 		</div>
 	</section>

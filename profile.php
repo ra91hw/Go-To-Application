@@ -44,19 +44,26 @@ if(isset($_GET["page"])){
 		<!-- import style sheet -->
 		<link rel="stylesheet" href="stylesheet.css">
 		
-<!--FontAwesome 5.7.2-->
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
-integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+		<!--FontAwesome 5.7.2-->
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+		integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 
 		<!-- import javascript -->
 		<!--<script src="script.js"></script> -->
+		<script>
+			function signOut() {
+				//Set expiry date to the past so the login cookie disappears
+				document.cookie = "userId=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
+				window.location.replace("index.php");
+			}
+		</script>
 	</head>
 	<body>
 		<?php
 			if(!isset($_COOKIE["userId"])){
 				header("Location: index.php");	//Redirect back to the main index. There's nothing to show if the user isn't logged in.
 				die();
-			}else{
+			} else{
 				$userId =$_COOKIE["userId"];
 				$loggedin = True;
 				$username = mysqli_fetch_array(mysqli_query($connection, "SELECT username FROM t_user WHERE id=" . $userId . ";"))[0];
@@ -75,7 +82,7 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 			<div id="login" class="login">
 				<?php
 				if ($loggedin){
-					echo "<ul> <li> <a href='profile.php'>Welcome, " . $username . "</a> </li> </ul>"; //PROFILE PAGE NEEDS A LOG OUT OPTION
+					echo "<ul> <li> <a href='profile.php'>Welcome, " . $username . "</a> </li> </ul>";
 				} else{
 					echo "<ul> <li> <a href='login.php'>Log in / Register</a> </li> </ul>";
 				}
@@ -132,6 +139,7 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 					<form action="avatar.php" method="post" enctype="multipart/form-data">
 						<input type="file" name="fileToUpload" onchange="form.submit()" id="fileToUpload">
 					</form>
+					<p><a onClick='signOut();'>Sign out</a></p>
 					<hr>
 			
 			<h1>Images uploaded by <?php echo $username?>.</h1>
@@ -145,7 +153,7 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 					echo "<table>"; // begin table
 
 					while($image = mysqli_fetch_array($result)){   // for each image returned
-						echo "<tr> <td> <img src = '" . $image['imgname'] . "'>";  //$image['index'] the index here is a field name
+						echo "<tr> <td> <img src = 'uploads/" . $image['imgname'] . "'>";  //$image['index'] the index here is a field name
 						echo " </td> </tr>";
 					}
 
