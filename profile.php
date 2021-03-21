@@ -18,8 +18,8 @@ fclose($file);
 $connection = mysqli_connect($logindetails[0], $logindetails[1], $logindetails[2], $logindetails[3]);
 
 if (mysqli_connect_errno()) {
-  echo "Failed to connect to MySQL: " . mysqli_connect_error();
-  exit();
+	echo "Failed to connect to MySQL: " . mysqli_connect_error();
+	exit();
 }
 
 //Find the page number of results to display
@@ -65,7 +65,7 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 		<section id="logo">
 			<div id="header" class="header">
 				<div class="logo">
-					<h1>Go-To</h1>
+					<h1><a href="index.php" style="text-decoration: none !important">Go-To</a></h1>
 					<h2>Photos on the go</h2>
 				</div>
 			</div>
@@ -87,8 +87,9 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 			<div id="uploader" class="uploader">
 				<div class="upload">
 					<h3>Upload a Photo</h3>
-					<button type="button" onclick="document.getElementById('file-input').click();">Select File</button>
-					<input id="file-input" type="file" name="test" style="display: none;" />
+					<form action="upload.php" method="post" enctype="multipart/form-data">
+						<input type="file" name="fileToUpload" onchange="form.submit()" id="fileToUpload">
+					</form>
 				</div>
 			</div>
 		</section>
@@ -114,32 +115,36 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 			<?php 				
 				$query = "SELECT CONCAT(newFileName, '.', ext) AS imgname FROM t_files WHERE userId = " . $userId . " LIMIT 20 OFFSET " . ($page * 20); //Gets 20 file names including extension, out of those uploaded by the currently logged in user
 				$result = mysqli_query($connection, $query);
-
-				echo "<table>"; // begin table
-
-				while($image = mysqli_fetch_array($result)){   // for each image returned
-					echo "<tr> <td> <img src = '" . $image['imgname'] . "'>";  //$image['index'] the index here is a field name
-					echo " </td> </tr>";
-				}
-
-				echo "</table>"; // end table
 				
-				$photoCount = mysqli_num_rows(mysqli_query($connection, "SELECT CONCAT(newFileName, '.', ext) AS imgname FROM t_files WHERE userId = " . $userId));
-				
-				//Have options to cycle through pages of results
-				echo "<form action = " . $_PHP_SELF . " method = 'GET'>";
-				if($page > 0){
-					//Not the first page - can go back any earlier!
-					//Display a previous page button, setting page to the current value of page - 1
-					echo "<button name='page' type='submit' value=" . ($page - 1) . ">Previous</button>";
+				//Note that the full number of photos is yet to be counted, as this is capped at 20. But if there's more than 0, there's more than 0
+				if(mysqli_num_rows($result) > 0){
+					echo "<table>"; // begin table
+
+					while($image = mysqli_fetch_array($result)){   // for each image returned
+						echo "<tr> <td> <img src = '" . $image['imgname'] . "'>";  //$image['index'] the index here is a field name
+						echo " </td> </tr>";
+					}
+
+					echo "</table>"; // end table
+					
+					$photoCount = mysqli_num_rows(mysqli_query($connection, "SELECT CONCAT(path, newFileName, '.', ext) AS imgname FROM t_files WHERE userId = " . $userId));
+					
+					//Have options to cycle through pages of results
+					echo "<form action = '' method = 'GET'>";
+					if($page > 0){
+						//Not the first page - can go back any earlier!
+						//Display a previous page button, setting page to the current value of page - 1
+						echo "<button name='page' type='submit' value=" . ($page - 1) . ">Previous</button>";
+					}
+					if(($page + 1) * 20 < $photoCount){
+						//There are photos remaining
+						//Display a previous page button, setting page to the current value of page - 1
+						echo "<button name='page' type='submit' value=" . ($page + 1) . ">Next</button>";
+					}
+					echo "</form>";
+				}else{
+					echo "<p>No images found</p>";
 				}
-				if(($page + 1) * 20 < $photoCount){
-					//There are photos remaining
-					//Display a previous page button, setting page to the current value of page - 1
-					echo "<button name='page' type='submit' value=" . ($page + 1) . ">Next</button>";
-				}
-				echo "</form>";
-							
 				mysqli_close($connection);
 			?>
 			<h1> Content from Database above </h1>

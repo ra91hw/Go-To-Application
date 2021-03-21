@@ -13,8 +13,8 @@ fclose($file);
 $connection = mysqli_connect($logindetails[0], $logindetails[1], $logindetails[2], $logindetails[3]);
 
 if (mysqli_connect_errno()) {
-  echo "Failed to connect to MySQL: " . mysqli_connect_error();
-  exit();
+	echo "Failed to connect to MySQL: " . mysqli_connect_error();
+	exit();
 }
 
 //Find the page number of results to display
@@ -62,7 +62,7 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 		<section id="logo">
 			<div id="header" class="header">
 				<div class="logo">
-					<h1>Go-To</h1>
+					<h1><a href="index.php" style="text-decoration: none !important">Go-To</a></h1>
 					<h2>Photos on the go</h2>
 				</div>
 			</div>
@@ -84,8 +84,9 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 			<div id="uploader" class="uploader">
 				<div class="upload">
 					<h3>Upload a Photo</h3>
-					<button type="button" onclick="document.getElementById('file-input').click();">Select File</button>
-					<input id="file-input" type="file" name="test" style="display: none;" />
+					<form action="upload.php" method="post" enctype="multipart/form-data">
+						<input type="file" name="fileToUpload" onchange="form.submit()" id="fileToUpload">
+					</form>
 				</div>
 			</div>
 		</section>
@@ -115,52 +116,58 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 				
 						<h1>Content from Database will go here.</h1>
 						<?php 
-							$query = "SELECT CONCAT(newFileName, '.', ext) AS imgname, t_user.id AS userId, t_user.username AS username FROM t_files JOIN t_user ON t_files.userId=t_user.id LIMIT 20 OFFSET " . ($page*20); //Gets 20 file names including extension
+							$query = "SELECT CONCAT(path, newFileName, '.', ext) AS imgname, t_user.id AS userId, t_user.username AS username FROM t_files JOIN t_user ON t_files.userId=t_user.id LIMIT 20 OFFSET " . ($page*20); //Gets 20 file names including extension
 							
+							//Count the results of a different query (since the previous one is limited)
 							$photoCount = mysqli_num_rows(mysqli_query($connection, "SELECT CONCAT(newFileName, '.', ext) AS imgname, t_user.id AS userId, t_user.username AS username FROM t_files JOIN t_user ON t_files.userId=t_user.id"));
 							
 							//NOTE: Tags have NOT yet been implemented on uploading. Once the database supports it, using "SELECT CONCAT(newFileName, '.', ext) AS imgname FROM t_files WHERE [tag field name] = [desired tag name] LIMIT 20" should work. This can be copied across each of the pages on the menu at the side (i.e. for what is currently listed as Ocean, Forest, Skyline and Animals
 							//Another thing to add is the ability to cycle through the rest of the images beyond the first 20. To do this, it might be best to filter them out with PHP rather than in the SQL tag?
-							$result = mysqli_query($connection, $query);
-
-							echo "<table>"; // begin table
-
-							while($image = mysqli_fetch_array($result)){   // for each image returned
-								echo "<tr> <td> <img src = '" . $image['imgname'] . "'>";  //$image['index'] the index here is a field name
-								echo "<p> Uploaded by " . $image['username'];
 								
-								if(file_exists ("/Go-To-Application/avatars/" . $image["userId"] . ".png")){
-									//User has a png avatar
-									echo "<img src='/Go-To-Application/avatars/" . $image["userId"] . ".png' width='100' height='100'> </p></td> </tr>";
-								} elseif(file_exists ("/Go-To-Application/avatars/" . $image["userId"] . ".jpg")){
-									//User has a jpg avatar
-									echo "<img src='/Go-To-Application/avatars/" . $image["userId"] . ".jpg' width='100' height='100'> </p></td> </tr>";
-								} elseif(file_exists ("/Go-To-Application/avatars/" . $image["userId"] . ".gif")){
-									//User has a gif avatar
-									echo "<img src='/Go-To-Application/avatars/" . $image["userId"] . ".gif' width='100' height='100'> </p></td> </tr>";
-								} else{
-									//User does not have an avatar
-									//Display default
-									echo "<img src='/Go-To-Application/avatars/default.png' width='100' height='100'> </p></td> </tr>";
-								}
-							}
+								
+							if($photoCount > 0){
+								$result = mysqli_query($connection, $query);
 
-							echo "</table> <br>"; // end table
-							
-							//Have options to cycle through pages of results
-							echo "<form action = " . $_PHP_SELF . " method = 'GET'>";
-							if($page > 0){
-								//Not the first page - can go back any earlier!
-								//Display a previous page button, setting page to the current value of page - 1
-								echo "<button name='page' type='submit' value=" . ($page - 1) . ">Previous</button>";
+								echo "<table>"; // begin table
+
+								while($image = mysqli_fetch_array($result)){   // for each image returned
+									echo "<tr> <td> <img src = '" . $image['imgname'] . "'>";  //$image['index'] the index here is a field name
+									echo "<p> Uploaded by " . $image['username'] . "  ";
+									
+									if(file_exists ("/Go-To-Application/avatars/" . $image["userId"] . ".png")){
+										//User has a png avatar
+										echo "<img src='/Go-To-Application/avatars/" . $image["userId"] . ".png' width='40' height='40'> </p> <hr> </td> </tr>";
+									} elseif(file_exists ("/Go-To-Application/avatars/" . $image["userId"] . ".jpg")){
+										//User has a jpg avatar
+										echo "<img src='/Go-To-Application/avatars/" . $image["userId"] . ".jpg' width='40' height='40'> </p> <hr> </td> </tr>";
+									} elseif(file_exists ("/Go-To-Application/avatars/" . $image["userId"] . ".gif")){
+										//User has a gif avatar
+										echo "<img src='/Go-To-Application/avatars/" . $image["userId"] . ".gif' width='40' height='40'> </p> <hr> </td> </tr>";
+									} else{
+										//User does not have an avatar
+										//Display default
+										echo "<img src='/Go-To-Application/avatars/default.png' width='40' height='40'> </p> <hr> </td> </tr>";
+									}
+								}
+
+								echo "</table> <br>"; // end table
+								
+								//Have options to cycle through pages of results
+								echo "<form action = '' method = 'GET'>";
+								if($page > 0){
+									//Not the first page - can go back any earlier!
+									//Display a previous page button, setting page to the current value of page - 1
+									echo "<button name='page' type='submit' value=" . ($page - 1) . ">Previous</button>";
+								}
+								if(($page + 1) * 20 < $photoCount){
+									//There are photos remaining
+									//Display a previous page button, setting page to the current value of page - 1
+									echo "<button name='page' type='submit' value=" . ($page + 1) . ">Next</button>";
+								}
+								echo "</form>";
+							}else{
+								echo "<p>No photos found...</p>";
 							}
-							if(($page + 1) * 20 < $photoCount){
-								//There are photos remaining
-								//Display a previous page button, setting page to the current value of page - 1
-								echo "<button name='page' type='submit' value=" . ($page + 1) . ">Next</button>";
-							}
-							echo "</form>";
-							
 							//Finished with the database
 							mysqli_close($connection); ?>
 						<h1> Content from Database above </h1>

@@ -5,4 +5,4 @@ Main application of Go-To - A photo based social media platform\
 \
 Even more importantly, "database_login.csv" must not have read permissions for anyone not involved in hosting the website as it stores the username and password required to access it.\
 \
-It is easy to change the login details for the database if required, by just changing the contents of database_login.csv. Seperated by commas should be the host name, username, password and default database to use.\
+It is easy to change the login details for the database if required, by just changing the contents of database_login.csv. Seperated by commas should be the host name, username, password and default database to use.

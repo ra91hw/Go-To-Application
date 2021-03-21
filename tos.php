@@ -16,8 +16,8 @@ fclose($file);
 $connection = mysqli_connect($logindetails[0], $logindetails[1], $logindetails[2], $logindetails[3]);
 
 if (mysqli_connect_errno()) {
-  echo "Failed to connect to MySQL: " . mysqli_connect_error();
-  exit();
+	echo "Failed to connect to MySQL: " . mysqli_connect_error();
+	exit();
 }
 
 //Check if the cookies currently record the user as being logged in
@@ -59,7 +59,7 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 	<section id="logo">
 		<div id="header" class="header">
 			<div class="logo">
-				<h1>Go-To</h1>
+				<h1><a href="index.php" style="text-decoration: none !important">Go-To</a></h1>
 				<h2>Photos on the go</h2>
 				<!--<img src="images-slideshow\Go-to logo.png" alt="logo">!-->
 			</div>
@@ -82,8 +82,9 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 		<div id="uploader" class="uploader">
 			<div class="upload">
 				<h3>Upload a Photo</h3>
-				<button type="button" onclick="document.getElementById('file-input').click();">Select File</button>
-				<input id="file-input" type="file" name="test" style="display: none;" />
+				<form action="upload.php" method="post" enctype="multipart/form-data">
+					<input type="file" name="fileToUpload" onchange="form.submit()" id="fileToUpload">
+				</form>
 			</div>
 		</div>
 	</section>
