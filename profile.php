@@ -111,7 +111,31 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 		<section id="content">
 			<div id="pictures" class="pictures">
 			<div class="content">
+					
+					<?php
+						if(file_exists ("avatars/" . $userId . ".png")){
+							//User has a png avatar
+							echo "<img src='/Go-To-Application/avatars/" . $userId . ".png' width='100' height='100'> </p>";
+						} elseif(file_exists ("avatars/" . $userId . ".jpg")){
+							//User has a jpg avatar
+							echo "<img src='avatars/" . $userId . ".jpg' width='100' height='100'> </p>";
+						} elseif(file_exists ("/Go-To-Application/avatars/" . $userId . ".gif")){
+							//User has a gif avatar
+							echo "<img src='avatars/" . $userId . ".gif' width='100' height='100'> </p>";
+						} else{
+							//User does not have an avatar
+							//Display default
+							echo "<img src='avatars/default.png' width='100' height='100'> </p>";
+						}
+					?>
+					<h3>Change Avatar</h3>
+					<form action="avatar.php" method="post" enctype="multipart/form-data">
+						<input type="file" name="fileToUpload" onchange="form.submit()" id="fileToUpload">
+					</form>
+					<hr>
+			
 			<h1>Images uploaded by <?php echo $username?>.</h1>
+			
 			<?php 				
 				$query = "SELECT CONCAT(newFileName, '.', ext) AS imgname FROM t_files WHERE userId = " . $userId . " LIMIT 20 OFFSET " . ($page * 20); //Gets 20 file names including extension, out of those uploaded by the currently logged in user
 				$result = mysqli_query($connection, $query);

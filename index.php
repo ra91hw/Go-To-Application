@@ -131,22 +131,22 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 								echo "<table>"; // begin table
 
 								while($image = mysqli_fetch_array($result)){   // for each image returned
-									echo "<tr> <td> <img src = '" . $image['imgname'] . "'>";  //$image['index'] the index here is a field name
+									echo "<tr> <td> <img src = '" . $image['imgname'] . "' style='max-height:600px;height:100%'>";  //$image['index'] the index here is a field name
 									echo "<p> Uploaded by " . $image['username'] . "  ";
 									
-									if(file_exists ("/Go-To-Application/avatars/" . $image["userId"] . ".png")){
+									if(file_exists ("avatars/" . $image["userId"] . ".png")){
 										//User has a png avatar
 										echo "<img src='/Go-To-Application/avatars/" . $image["userId"] . ".png' width='40' height='40'> </p> <hr> </td> </tr>";
-									} elseif(file_exists ("/Go-To-Application/avatars/" . $image["userId"] . ".jpg")){
+									} elseif(file_exists ("avatars/" . $image["userId"] . ".jpg")){
 										//User has a jpg avatar
-										echo "<img src='/Go-To-Application/avatars/" . $image["userId"] . ".jpg' width='40' height='40'> </p> <hr> </td> </tr>";
+										echo "<img src='avatars/" . $image["userId"] . ".jpg' width='40' height='40'> </p> <hr> </td> </tr>";
 									} elseif(file_exists ("/Go-To-Application/avatars/" . $image["userId"] . ".gif")){
 										//User has a gif avatar
-										echo "<img src='/Go-To-Application/avatars/" . $image["userId"] . ".gif' width='40' height='40'> </p> <hr> </td> </tr>";
+										echo "<img src='avatars/" . $image["userId"] . ".gif' width='40' height='40'> </p> <hr> </td> </tr>";
 									} else{
 										//User does not have an avatar
 										//Display default
-										echo "<img src='/Go-To-Application/avatars/default.png' width='40' height='40'> </p> <hr> </td> </tr>";
+										echo "<img src='avatars/default.png' width='40' height='40'> </p> <hr> </td> </tr>";
 									}
 								}
 

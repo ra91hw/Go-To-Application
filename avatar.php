@@ -19,17 +19,16 @@ if (mysqli_connect_errno()) {
 
 
 //https://www.w3schools.com/php/php_file_upload.asp
-$target_dir = "uploads/";
+$target_dir = "avatars/";
 $old_filename = $target_dir . basename($_FILES["fileToUpload"]["name"]);
 $uploadOk = 1;
 $imageFileType = strtolower(pathinfo($old_filename,PATHINFO_EXTENSION));
 // Check if image file is a actual image or fake image
 if(isset($_POST)) {
 	$check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
-	if($check !== false) {
+	if($check != false) {
 		//It seems using mime check is exploitable - This should be changed if there is time!
 		// echo "File is an image - " . $check["mime"] . ".";
-		$uploadOk = 1;
 		
 		// Check file size
 		if ($_FILES["fileToUpload"]["size"] > 500000) {	//This limit can be changed
@@ -48,23 +47,11 @@ if(isset($_POST)) {
 			$uploadOk = 0;
 		}
 		//By this point, the image is confirmed valid
-		
-		//Create a new name for the file
-		$new_filename = rand(100, 10000000);
-		while (file_exists($target_dir . $new_filename . "." . $imageFileType)) {
-			//This implementation allows for up to 39999600 file names.
-			//That's a maximum of 9999900 for any valid file extension
-			//Finding a new valid image will slow down the closer it gets to the maximum capacity
-			//But it won't realistically reach the maximum capacity so that shouldn't be a concern at this stage
-			$new_filename = rand(100, 10000000);
 		}
 	} else {
 		$errorMessage = "File is not an image.";
 		$uploadOk = 0;
 	}
-}else{
-	
-}
 
 
 ?>
@@ -153,27 +140,39 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 						<?php
 							if($uploadOk){
 								//If image filters are to be added, this is the area where that process goes
+								
+								//Create a new name for the file
+		
+								//Both username and id are unique
+								//By using the ID rather than the username, it would be easier to allow accounts to change their username, should that feature ever be implemented (it almost definitely won't)
+								//It will come at the security cost of making it trivially easy to find out someone else's ID (by just checking the URL of their avatar, if they have one set).
+								//If it's possible for a user to create a cookie storing an arbritary userId, then it would be very easy to gain access to anyone's account through this
+								//That being said, the security flaw here is mainly being able to create cookies like that, so the priority should be to fix that instead
+								$new_filename = $target_dir . $userId . "." . $imageFileType;
+								
+								//Delete any pre-existing avatar
+								//Could use unlink($target_dir . $userId . ".*") but this should cover everything
+								//Maybe this is more efficient? (only checks 3 possibilities) 
+								//Either way, it's nicer only deleting files after explicitly naming them, there's absolutely no room for accidentally deleting *.* or anything
+								foreach (array(".jpg", ".png", ".gif") as &$extension) {
+									if(file_exists($target_dir . $userId . "." . $extension)){
+										echo "<p>" . $target_dir . $userId . $extension . "</p>";
+										unlink($target_dir . $userId . $extension);
+									}else{
+										echo "<p>There is no " . $target_dir . $userId . $extension . "</p>";
+									}
+								}
+								unset($extension);
+															
 								//Attempt to upload the image
 								//echo "<p>" . $_FILES["fileToUpload"]["tmp_name"] . "</p>";
-								if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_dir . $new_filename . "." . $imageFileType)) {
-									//MYSQL QUERY HERE
-									$newId = rand(1, 100000000);
-									while(mysqli_num_rows(mysqli_query($connection, "SELECT * FROM t_files WHERE id = " . $newId))){
-										//Far from efficient, change if possible
-										//Though in its defence, it's unlikely that there would be more than one loop on this section anytime soon
-										$newId = rand(1, 100000000);
-									}
-									
-									$query = "INSERT INTO t_files (id, oldFileName, newFileName, ext, path, uploadtime, userId) VALUES (" . $newId . ", '" . basename($_FILES["fileToUpload"]["name"]) . "', '" . $new_filename . "', '" . $imageFileType . "', '" . $target_dir . "', '" . date("Y-m-d") . "', " . $userId . ")";
-									if ($result = mysqli_query($connection, $query)){
-										echo "<p>Image successfully uploaded!</p>";
-									}else{
-										//echo "<p>" . $query . "</p>";
-										echo "<p>Error: " . mysqli_error($connection) . "</p>";
-									}
+								echo "<p>Moving ". $_FILES["fileToUpload"]["tmp_name"] . " to " .$new_filename  . "</p>";
+								if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"],  $new_filename)) {
+									//NO DATABASE INVOLVEMENT REQUIRED
+									echo "<h1>Successfully changed profile picture!</h1>";
+									echo "<a href='index.php'>Return to main page...</a>";
 								} else {
-									$errorMessage = "Unexpected error in uploading your file. Please try again!";
-									$uploadOk = 0;
+									echo "<p>Unexpected error in uploading your file. Please try again!</p>";
 								}
 								//echo "<p>Success! " . $new_filename . "</p>";
 							}else{
