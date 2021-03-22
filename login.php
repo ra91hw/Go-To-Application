@@ -57,7 +57,7 @@ if(isset($_POST["email"]) && isset($_POST["username"]) && isset($_POST["password
 			//Try again if id is in use
 			$userId = rand(100, 100000000);
 		}
-		if (mysqli_query($connection, "INSERT INTO t_user (id, username, password, email) VALUES ('" . $userId . "', '" . $_POST["username"] . "', '" . $_POST["password"] . "', '" . $_POST["email"] . "')")){
+		if (mysqli_query($connection, "INSERT INTO t_user (id, username, password, email, avatar) VALUES ('" . $userId . "', '" . $_POST["username"] . "', '" . $_POST["password"] . "', '" . $_POST["email"] . "', 0)")){
 			//Create a php file for the new user's profile, and open the template
 			$newFile = fopen($_POST["username"] . ".php", "w");
 			$templateFile = fopen("part2.txt", "r") or die("Unable to open file!");

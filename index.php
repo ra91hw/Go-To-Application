@@ -123,7 +123,7 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 				
 						<h1>Content from Database will go here.</h1>
 						<?php 
-							$query = "SELECT CONCAT(path, newFileName, '.', ext) AS imgname, t_user.id AS userId, t_user.username AS username FROM t_files JOIN t_user ON t_files.userId=t_user.id LIMIT 20 OFFSET " . ($page*20); //Gets 20 file names including extension
+							$query = "SELECT CONCAT(path, newFileName, '.', ext) AS imgname, t_user.id AS userId, t_user.username AS username, t_user.avatar AS avatarExt FROM t_files JOIN t_user ON t_files.userId=t_user.id LIMIT 20 OFFSET " . ($page*20); //Gets 20 file names including extension
 							
 							//Count the results of a different query (since the previous one is limited)
 							$photoCount = mysqli_num_rows(mysqli_query($connection, "SELECT CONCAT(newFileName, '.', ext) AS imgname, t_user.id AS userId, t_user.username AS username FROM t_files JOIN t_user ON t_files.userId=t_user.id"));
@@ -139,22 +139,25 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 
 								while($image = mysqli_fetch_array($result)){   // for each image returned
 									echo "<tr> <td> <img src = '" . $image['imgname'] . "' style='max-height:600px;height:100%'>";  //$image['index'] the index here is a field name
-									echo "<p> Uploaded by " . $image['username'] . "  ";
+									echo "<p> Uploaded by <a href='" . $image['username'] . ".php'>" . $image['username'] . "</a>  ";
 									
-									if(file_exists ("avatars/" . $image["userId"] . ".png")){
-										//User has a png avatar
-										echo "<img src='/Go-To-Application/avatars/" . $image["userId"] . ".png' width='40' height='40'> </p> <hr> </td> </tr>";
-									} elseif(file_exists ("avatars/" . $image["userId"] . ".jpg")){
-										//User has a jpg avatar
-										echo "<img src='avatars/" . $image["userId"] . ".jpg' width='40' height='40'> </p> <hr> </td> </tr>";
-									} elseif(file_exists ("/Go-To-Application/avatars/" . $image["userId"] . ".gif")){
-										//User has a gif avatar
-										echo "<img src='avatars/" . $image["userId"] . ".gif' width='40' height='40'> </p> <hr> </td> </tr>";
-									} else{
-										//User does not have an avatar
-										//Display default
-										echo "<img src='avatars/default.png' width='40' height='40'> </p> <hr> </td> </tr>";
+									//Find the filename of the user's avatar
+									switch ($image['avatarExt']){
+										case 0:	//default
+											$avFile = "default.png";
+											break;
+										case 1:	//jpg
+											$avFile = $image["userId"] . ".jpg";
+											break;
+										case 2:	//png
+											$avFile = $image["userId"] . ".png";
+											break;
+										case 3:	//gif
+											$avFile = $image["userId"] . ".gif";
+											break;
 									}
+									
+									echo "<img src='avatars/" . $avFile . "' width='40' height='40'> </p> <hr> </td> </tr>";
 								}
 
 								echo "</table> <br>"; // end table

@@ -67,6 +67,7 @@ if(isset($_GET["page"])){
 				$userId =$_COOKIE["userId"];
 				$loggedin = True;
 				$username = mysqli_fetch_array(mysqli_query($connection, "SELECT username FROM t_user WHERE id=" . $userId . ";"))[0];
+				$avExt = mysqli_fetch_array(mysqli_query($connection, "SELECT avatar FROM t_user WHERE id=" . $userId . ";"))[0];
 			}
 		?>
 		<section id="logo">
@@ -120,26 +121,29 @@ if(isset($_GET["page"])){
 			<div class="content">
 					
 					<?php
-						if(file_exists ("avatars/" . $userId . ".png")){
-							//User has a png avatar
-							echo "<img src='/Go-To-Application/avatars/" . $userId . ".png' width='100' height='100'> </p>";
-						} elseif(file_exists ("avatars/" . $userId . ".jpg")){
-							//User has a jpg avatar
-							echo "<img src='avatars/" . $userId . ".jpg' width='100' height='100'> </p>";
-						} elseif(file_exists ("/Go-To-Application/avatars/" . $userId . ".gif")){
-							//User has a gif avatar
-							echo "<img src='avatars/" . $userId . ".gif' width='100' height='100'> </p>";
-						} else{
-							//User does not have an avatar
-							//Display default
-							echo "<img src='avatars/default.png' width='100' height='100'> </p>";
+						//Find the filename of the user's avatar
+						switch ($avExt){
+							case 0:	//default
+								$avFile = "default.png";
+								break;
+							case 1:	//jpg
+								$avFile = $userId . ".jpg";
+								break;
+							case 2:	//png
+								$avFile = $userId . ".png";
+								break;
+							case 3:	//gif
+								$avFile = $userId . ".gif";
+								break;
 						}
+						
+						echo "<img src='avatars/" . $avFile . "' width='100' height='100'> </p> <hr> </td> </tr>";
 					?>
 					<h3>Change Avatar</h3>
 					<form action="avatar.php" method="post" enctype="multipart/form-data">
 						<input type="file" name="fileToUpload" onchange="form.submit()" id="fileToUpload">
 					</form>
-					<p><a onClick='signOut();'>Sign out</a></p>
+					<p><a onClick='signOut();' style="cursor: pointer; cursor: hand;">Sign out</a></p>
 					<hr>
 			
 			<h1>Images uploaded by <?php echo $username?>.</h1>

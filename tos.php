@@ -121,7 +121,8 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 				<p>3. Do not upload anything illegal.</p>
 				<p>4. Respect other users of the platform.</p>
 				<p>5. Do not attempt to hack or otherwise abuse our website or we may terminate your account immediately.</p>
-				<p>6. Try to keep things varied. Don't upload very similar pictures to ones that you have already posted, it is much more interesting to see something new. We hope you will see many things you haven't seen before here on Go-To!</p>
+				<p>6. All images you post to our website are public. By posting any photo, you agree to it being visible to all.</p>
+				<p>7. Try to keep things varied. Don't upload very similar pictures to ones that you have already posted, it is much more interesting to see something new. We hope you will see many things you haven't seen before here on Go-To!</p>
 
 			</div>
 		</div>

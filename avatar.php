@@ -41,18 +41,30 @@ if(isset($_POST)) {
 			$imageFileType = "jpg";
 		}
 		
-		// Allow certain file formats
-		if($imageFileType != "jpg" && $imageFileType != "png" && $imageFileType != "gif") {
+		//Assign a number to the file extension (for recalling from the database)
+		//Simultaneously use this to check that the the extension is one of the 3 valid ones
+		$extNo = -1;	//Initialise to an invalid number
+		//Skip 0 - This can be used for the default
+		if($imageFileType == "jpg"){
+			$extNo = 1;
+		}elseif ($imageFileType == "png"){
+			$extNo = 2;
+		}elseif ($imageFileType == "gif"){
+			$extNo = 3;
+		}
+		
+		//Check that the file format is valid
+		if($extNo == -1){
 			$errorMessage = "Invalid file format. Please submit a png, jpg or gif!";
 			$uploadOk = 0;
 		}
+		
 		//By this point, the image is confirmed valid
-		}
 	} else {
 		$errorMessage = "File is not an image.";
 		$uploadOk = 0;
 	}
-
+}
 
 ?>
 
@@ -107,7 +119,7 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 			<div id="login" class="login">
 				<?php
 				if ($loggedin){
-					echo "<ul> <li> <a href='profile.php'>Welcome, " . $username . "</a> </li> </ul>"; //PROFILE PAGE NEEDS A LOG OUT OPTION
+					echo "<ul> <li> <a href='profile.php'>Welcome, " . $username . "</a> </li> </ul>";
 				} else{
 					echo "<ul> <li> <a href='login.php'>Log in / Register</a> </li> </ul>";
 				}
@@ -157,25 +169,24 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 								//That being said, the security flaw here is mainly being able to create cookies like that, so the priority should be to fix that instead
 								$new_filename = $target_dir . $userId . "." . $imageFileType;
 								
+								//Delete profile with same extension, if it exists
+								if(file_exists($new_filename)){
+									unlink($new_filename);
+								}
+								
 								//Delete any pre-existing avatar
 								//Could use unlink($target_dir . $userId . ".*") but this should cover everything
 								//Maybe this is more efficient? (only checks 3 possibilities) 
 								//Either way, it's nicer only deleting files after explicitly naming them, there's absolutely no room for accidentally deleting *.* or anything
-								foreach (array(".jpg", ".png", ".gif") as &$extension) {
-									if(file_exists($target_dir . $userId . "." . $extension)){
-										echo "<p>" . $target_dir . $userId . $extension . "</p>";
-										unlink($target_dir . $userId . $extension);
-									}else{
-										echo "<p>There is no " . $target_dir . $userId . $extension . "</p>";
-									}
-								}
-								unset($extension);
+								
 															
 								//Attempt to upload the image
 								//echo "<p>" . $_FILES["fileToUpload"]["tmp_name"] . "</p>";
-								echo "<p>Moving ". $_FILES["fileToUpload"]["tmp_name"] . " to " .$new_filename  . "</p>";
+								//echo "<p>Moving ". $_FILES["fileToUpload"]["tmp_name"] . " to " .$new_filename  . "</p>";
 								if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"],  $new_filename)) {
-									//NO DATABASE INVOLVEMENT REQUIRED
+									//UPDATE DATABASE
+									$query = "UPDATE t_user SET avatar = " . $extNo ." WHERE id = " . $userId;
+									$result = mysqli_query($connection, $query);
 									echo "<h1>Successfully changed profile picture!</h1>";
 									echo "<a href='index.php'>Return to main page...</a>";
 								} else {
