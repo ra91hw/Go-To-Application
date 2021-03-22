@@ -39,6 +39,18 @@ if(isset($_GET["page"])){
 	} else{
 		$loggedin = False;
 	}
+	
+	//Vote or unvote images.
+	//If the relevant button was available to be clicked, then the record exists / is absent as required.
+	if(isset($_POST["vote"])){
+		//Need to add a vote for user = $userId, image = $_POST["vote"]
+		mysqli_query($connection, "INSERT INTO t_votes (userId, photoId) VALUES (" . $userId . ", " . $_POST["vote"] . ")");
+	}
+	if(isset($_POST["unvote"])){
+		//Need to remove the vote for user = $userId, image = $_POST["unvote"]
+		mysqli_query($connection, "DELETE FROM t_votes WHERE userId = " . $userId . " AND photoId = " . $_POST["unvote"]);
+	}
+	
 	?>
 	<head>
 		<title>Go-To</title>
@@ -82,7 +94,7 @@ if(isset($_GET["page"])){
 			<div id="login" class="login">
 				<?php
 				if ($loggedin){
-					echo "<ul> <li> <a href='profile.php'>Welcome, " . $username . "</a> </li> </ul>"; //PROFILE PAGE NEEDS A LOG OUT OPTION
+					echo "<ul> <li> <a href='profile.php'>Welcome, " . $username . "</a> </li> </ul>";
 				} else{
 					echo "<ul> <li> <a href='login.php'>Log in / Register</a> </li> </ul>";
 				}
@@ -126,13 +138,12 @@ if(isset($_GET["page"])){
 				
 						<h1>Recently uploaded:</h1>
 						<?php 
-							$query = "SELECT CONCAT(path, newFileName, '.', ext) AS imgname, t_user.id AS userId, t_user.username AS username, t_user.avatar AS avatarExt FROM t_files JOIN t_user ON t_files.userId=t_user.id LIMIT 20 OFFSET " . ($page*20); //Gets 20 file names including extension
+							$query = "SELECT CONCAT(path, newFileName, '.', ext) AS imgname, t_files.id AS imgId, t_user.id AS userId, t_user.username AS username, t_user.avatar AS avatarExt FROM t_files JOIN t_user ON t_files.userId=t_user.id LIMIT 20 OFFSET " . ($page*20); //Gets 20 file names including extension
 							
 							//Count the results of a different query (since the previous one is limited)
 							$photoCount = mysqli_num_rows(mysqli_query($connection, "SELECT CONCAT(newFileName, '.', ext) AS imgname, t_user.id AS userId, t_user.username AS username FROM t_files JOIN t_user ON t_files.userId=t_user.id"));
 							
 							//NOTE: Tags have NOT yet been implemented on uploading. Once the database supports it, using "SELECT CONCAT(newFileName, '.', ext) AS imgname FROM t_files WHERE [tag field name] = [desired tag name] LIMIT 20" should work. This can be copied across each of the pages on the menu at the side (i.e. for what is currently listed as Ocean, Forest, Skyline and Animals
-							//Another thing to add is the ability to cycle through the rest of the images beyond the first 20. To do this, it might be best to filter them out with PHP rather than in the SQL tag?
 								
 								
 							if($photoCount > 0){
@@ -142,6 +153,25 @@ if(isset($_GET["page"])){
 
 								while($image = mysqli_fetch_array($result)){   // for each image returned
 									echo "<tr> <td> <img src = '" . $image['imgname'] . "' style='max-height:600px;height:100%'>";  //$image['index'] the index here is a field name
+									
+									//Display vote option
+									if($loggedin && $userId != $image['username']){
+										$imageId = $image['imgId'];
+										//1 if user has voted on the current image, 0 if not
+										$voted = mysqli_num_rows(mysqli_query($connection, "SELECT * FROM t_votes WHERE userId = " . $userId . " AND photoId = " . $imageId . " LIMIT 1"));
+										
+										//Create a link to either vote or unvote an image
+										echo "<form action = '' method = 'POST'>";
+										if ($voted){
+											//User has voted on this image
+											echo "<button name='unvote' type='submit' value=" . $imageId . ">Unvote</button>";
+										}else{
+											//User has not voted on this image
+											echo "<button name='vote' type='submit' value=" . $imageId . ">Vote</button>";
+										}
+										echo "</form>";
+									}
+									
 									echo "<p> Uploaded by <a href='" . $image['username'] . ".php'>" . $image['username'] . "</a>  ";
 									
 									//Find the filename of the user's avatar
