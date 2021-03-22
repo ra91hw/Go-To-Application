@@ -42,6 +42,7 @@ if(isset($_POST["usernameS"]) && isset($_POST["passwordS"])) {
 	}
 }
 
+$failedsignup = false;
 if(isset($_POST["email"]) && isset($_POST["username"]) && isset($_POST["password"])) {
 	$failedsignup = false;
 	$result = mysqli_query($connection, "SELECT id FROM t_user WHERE username = '" . $_POST["username"] . "' LIMIT 1");
@@ -56,7 +57,17 @@ if(isset($_POST["email"]) && isset($_POST["username"]) && isset($_POST["password
 			//Try again if id is in use
 			$userId = rand(100, 100000000);
 		}
-		if (mysqli_query($connection, "INSERT INTO t_user (id, username, password, email) VALUES (" . $userId . ", " . $_POST["username"] . ", " . $_POST["password"] . ", " . $_POST["email"] . ")")){
+		if (mysqli_query($connection, "INSERT INTO t_user (id, username, password, email) VALUES ('" . $userId . "', '" . $_POST["username"] . "', '" . $_POST["password"] . "', '" . $_POST["email"] . "')")){
+			//Create a php file for the new user's profile, and open the template
+			$newFile = fopen($_POST["username"] . ".php", "w");
+			$templateFile = fopen("part2.txt", "r") or die("Unable to open file!");
+			
+			//Fill in the blank for the userId in the profile page for the new user
+			//Note that the new line characters here vary between OS. These should work for Windows specifically:
+			fwrite($newFile, "<?php\r\n\$profileUser = " . $userId . fread($templateFile, filesize("part2.txt")));	//Filesize here means to continue reading for the full size of the file
+			fclose($templateFile);
+			fclose($newFile);
+			
 			//Create a cookie storing the currently logged in user
 			setcookie("userId", $userId, time() + (86400 * 30), "/"); // 86400 = 1 day
 			mysqli_free_result($result);
@@ -64,7 +75,7 @@ if(isset($_POST["email"]) && isset($_POST["username"]) && isset($_POST["password
 			header("Location: index.php");	//The cookie now shows that the user is logged in. Return to the main page.
 			die();
 		}else{
-			echo "Error signing up.";
+			echo mysqli_error($connection);
 			die();
 		}
 	}else{
