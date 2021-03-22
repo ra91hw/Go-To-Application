@@ -25,7 +25,7 @@ if (mysqli_connect_errno()) {
 $failedlogin = false;	//Right now, there's no reason to believe that there's a failed log in attempt. This may be changed later
 
 if(isset($_POST["usernameS"]) && isset($_POST["passwordS"])) {
-	$result = mysqli_query($connection, "SELECT id FROM t_user WHERE username = '" . $_POST["usernameS"] . "' AND password = '" . $_POST["passwordS"] . "' LIMIT 1");
+	$result = mysqli_query($connection, "SELECT id FROM t_user WHERE username = '" . strtolower($_POST["usernameS"]) . "' AND password = '" . $_POST["passwordS"] . "' LIMIT 1");
 	echo mysqli_error($connection);
 	if (mysqli_num_rows($result) > 0){
 		//Credentials are valid
@@ -44,22 +44,35 @@ if(isset($_POST["usernameS"]) && isset($_POST["passwordS"])) {
 
 $failedsignup = false;
 if(isset($_POST["email"]) && isset($_POST["username"]) && isset($_POST["password"])) {
+	$proposedName = strtolower($_POST["username"]);
 	$failedsignup = false;
-	$result = mysqli_query($connection, "SELECT id FROM t_user WHERE username = '" . $_POST["username"] . "' LIMIT 1");
 	echo mysqli_error($connection);
-	if (mysqli_num_rows($result) == 0 && $_POST["username"] != "index" && $_POST["username"] != "login" && $_POST["username"] != "profile" && $_POST["username"] != "avatar" && $_POST["username"] != "tos" && $_POST["username"] != "upload" ){
+	//Verify username and email are valid, and that the username isn't in use
+	if(!preg_match("/^[a-z0-9]+$/",$proposedName)){
+		//The username contains only letters and numbers
+		$failedsignup = true;
+		$signuperror = "Username contains invalid characters!";
+	}elseif (strlen(utf8_decode($_POST["password"])) < 6 || strlen(utf8_decode($_POST["password"])) > 80){
+		//The password has at least 6 characters
+		$failedsignup = true;
+		$signuperror = "Password is too long or short! Please make sure it is between 6 and 80 characters long.";
+	}elseif (!filter_var($_POST["email"], FILTER_VALIDATE_EMAIL)){
+		//The email address is not an email address (PHP handles email address verification)
+		$failedsignup = true;
+		$signuperror = "Invalid email address!";
+	}elseif (mysqli_num_rows(mysqli_query($connection, "SELECT id FROM t_user WHERE username = '" . $proposedName . "' LIMIT 1")) == 0 && $proposedName != "index" && $proposedName != "login" && $proposedName != "profile" && $proposedName != "avatar" && $proposedName != "tos" && $proposedName != "upload" ){
 		//Username is free
-		$row = mysqli_fetch_row($result);
-		
+		//$row = mysqli_fetch_row($result);
+
 		//Find an unused userId
 		$userId = rand(100, 100000000);
 		while(mysqli_num_rows(mysqli_query($connection, "SELECT * FROM t_user WHERE id = " . $userId . " LIMIT 1")) > 0){
 			//Try again if id is in use
 			$userId = rand(100, 100000000);
 		}
-		if (mysqli_query($connection, "INSERT INTO t_user (id, username, password, email, avatar) VALUES ('" . $userId . "', '" . $_POST["username"] . "', '" . $_POST["password"] . "', '" . $_POST["email"] . "', 0)")){
+		if (mysqli_query($connection, "INSERT INTO t_user (id, username, password, email, avatar) VALUES ('" . $userId . "', '" . $proposedName . "', '" . $_POST["password"] . "', '" . $_POST["email"] . "', 0)")){
 			//Create a php file for the new user's profile, and open the template
-			$newFile = fopen($_POST["username"] . ".php", "w");
+			$newFile = fopen($proposedName . ".php", "w");
 			$templateFile = fopen("part2.txt", "r") or die("Unable to open file!");
 			
 			//Fill in the blank for the userId in the profile page for the new user
@@ -70,7 +83,7 @@ if(isset($_POST["email"]) && isset($_POST["username"]) && isset($_POST["password
 			
 			//Create a cookie storing the currently logged in user
 			setcookie("userId", $userId, time() + (86400 * 30), "/"); // 86400 = 1 day
-			mysqli_free_result($result);
+			//mysqli_free_result($result);
 			
 			header("Location: index.php");	//The cookie now shows that the user is logged in. Return to the main page.
 			die();
@@ -192,7 +205,7 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 				</form>
 				<?php
 					if ($failedsignup){
-						
+						echo "<p>" . $signuperror . "</p>";
 					}
 				?>
 				

@@ -59,7 +59,7 @@ if(isset($_GET["page"])){
 			$usernameView = mysqli_fetch_array(mysqli_query($connection, "SELECT username FROM t_user WHERE id=" . $profileUser . ";"))[0];
 			
 			//Being logged in is optional here
-			if(!isset($_COOKIE["userId"])){
+			if(isset($_COOKIE["userId"])){
 				$userId =$_COOKIE["userId"];
 				$loggedin = True;
 				$username = mysqli_fetch_array(mysqli_query($connection, "SELECT username FROM t_user WHERE id=" . $userId . ";"))[0];
