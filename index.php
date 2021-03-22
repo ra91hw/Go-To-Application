@@ -50,9 +50,12 @@ if(isset($_GET["page"])){
 		<!-- import style sheet -->
 		<link rel="stylesheet" href="stylesheet.css">
 		
-<!--FontAwesome 5.7.2-->
-<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
-integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+		<!-- import icon -->
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+		
+		<!--FontAwesome 5.7.2-->
+		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
+		integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
 
 		<!-- import javascript -->
 		<script src="script.js"></script>
@@ -121,7 +124,7 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 						<a><img src="images-slideshow\skyline.jpg" alt="skyline"></a>
 					</div>
 				
-						<h1>Content from Database will go here.</h1>
+						<h1>Recently uploaded:</h1>
 						<?php 
 							$query = "SELECT CONCAT(path, newFileName, '.', ext) AS imgname, t_user.id AS userId, t_user.username AS username, t_user.avatar AS avatarExt FROM t_files JOIN t_user ON t_files.userId=t_user.id LIMIT 20 OFFSET " . ($page*20); //Gets 20 file names including extension
 							
@@ -180,7 +183,7 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 							}
 							//Finished with the database
 							mysqli_close($connection); ?>
-						<h1> Content from Database above </h1>
+						<!--<h1> Content from Database above </h1>!-->
 				</div>
 			</div>
 		</section>	

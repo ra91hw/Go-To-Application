@@ -183,7 +183,7 @@ if(isset($_GET["page"])){
 				}
 				mysqli_close($connection);
 			?>
-			<h1> Content from Database above </h1>
+				<!--<h1> Content from Database above </h1>!-->
 				</div>
 			</div>
 		</section>	

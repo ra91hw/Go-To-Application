@@ -121,7 +121,7 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 			<div id="login" class="login">
 				<?php
 				if ($loggedin){
-					echo "<ul> <li> <a href='profile.php'>Welcome, " . $username . "</a> </li> </ul>"; //PROFILE PAGE NEEDS A LOG OUT OPTION
+					echo "<ul> <li> <a href='profile.php'>Welcome, " . $username . "</a> </li> </ul>";
 				} else{
 					echo "<ul> <li> <a href='login.php'>Log in / Register</a> </li> </ul>";
 				}

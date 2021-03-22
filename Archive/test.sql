@@ -2,7 +2,7 @@
 
 create table t_files(id integer, oldFileName varchar(200), newFileName varchar(300), ext varchar(20), path varchar(300), size varchar(200), isImg varchar(8), downloadcounts varchar(6), uploadtime date, userId integer, PRIMARY KEY (id));
 create table t_user(id integer, username varchar(80) UNIQUE, password varchar(80), email varchar(80), avatar tinyint(4), PRIMARY KEY (id));
-create table t_votes(id integer, userId integer, photoId integer, PRIMARY KEY (id));
+create table t_votes(userId integer, photoId integer, PRIMARY KEY (userId, photoId));
 
 
 insert into t_files(id, newFileName, ext, userId) values(1, "photo", "png", 12);
