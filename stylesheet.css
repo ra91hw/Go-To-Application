@@ -8,7 +8,7 @@ body {
 	margin:0;
 	padding: 0;
 	width:100%;
- 	background: SlateBlue;
+ 	background: rgb(120, 207, 186);
 	color: rgb(255, 255, 255);
 	height: 100px;
 	z-index: 1;
@@ -32,7 +32,7 @@ body {
     box-shadow: 3px 3px 10px rgb(74, 77, 85);
     padding: 1.5vh;
     align-content: center;
-    background-color: rgb(47, 87, 199);
+    background-color: rgb(120, 207, 186);
 	height: 25vw;
 	margin-left: 10vw;
 	margin-right: auto;
@@ -74,7 +74,7 @@ body {
 	width: 200px;
 	border-style: solid;
 	border-width: 3px;
-	border-color: SlateBlue;
+	border-color: rgb(120, 207, 186);
 	background-color: #f1f1f1;
 	height: 5%;
 	z-index: 1;
@@ -88,7 +88,7 @@ body {
 	width: 200px;
 	border-style: solid;
 	border-width: 3px;
-	border-color: SlateBlue;
+	border-color: rgb(120, 207, 186);
 	background-color: #f1f1f1;
 	height: 15%;
 	z-index: 1;
@@ -102,9 +102,9 @@ body {
 	width: 200px;
 	border-style: solid;
 	border-width: 3px;
-	border-color: SlateBlue;
+	border-color: rgb(120, 207, 186);
 	background-color: #f1f1f1;
-	height: 57%;
+	height: 55%;
 	z-index: 1;
 }	
 
@@ -137,8 +137,8 @@ li a:hover {
 	width: 75%;
 	border-style: solid;
 	border-width: 3px;
-	border-color: SlateBlue;
-	height: 78%;
+	border-color: rgb(120, 207, 186);
+	height: 76%;
 	z-index: 1;
 	overflow: auto;
 }
@@ -151,7 +151,7 @@ li a:hover {
 	position: fixed;
 	left: 0;
 	width: 100%;
-	background-color: #222;	
+	background-color: rgb(24, 31, 51);
 	color: #999;
 	text-align: center;
 	font-family: sans-serif;
