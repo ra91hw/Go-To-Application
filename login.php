@@ -47,7 +47,7 @@ if(isset($_POST["email"]) && isset($_POST["username"]) && isset($_POST["password
 	$failedsignup = false;
 	$result = mysqli_query($connection, "SELECT id FROM t_user WHERE username = '" . $_POST["username"] . "' LIMIT 1");
 	echo mysqli_error($connection);
-	if (mysqli_num_rows($result) == 0){
+	if (mysqli_num_rows($result) == 0 && $_POST["username"] != "index" && $_POST["username"] != "login" && $_POST["username"] != "profile" && $_POST["username"] != "avatar" && $_POST["username"] != "tos" && $_POST["username"] != "upload" ){
 		//Username is free
 		$row = mysqli_fetch_row($result);
 		
