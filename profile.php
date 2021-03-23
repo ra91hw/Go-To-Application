@@ -121,31 +121,46 @@ if(isset($_GET["page"])){
 		<section id="content">
 			<div id="pictures" class="pictures">
 			<div class="content">
-					
-					<?php
-						//Find the filename of the user's avatar
-						switch ($avExt){
-							case 0:	//default
-								$avFile = "default.png";
-								break;
-							case 1:	//jpg
-								$avFile = $userId . ".jpg";
-								break;
-							case 2:	//png
-								$avFile = $userId . ".png";
-								break;
-							case 3:	//gif
-								$avFile = $userId . ".gif";
-								break;
-						}
+			<?php 
+				//Check if the current user is even on the table
+				//This only happens if they have a nonzero score
+				//The following line returns 1 if the user is there, 0 if there are no users (so true and false)
+				if(mysqli_fetch_array(mysqli_query($connection, "SELECT COUNT(*) FROM t_scores WHERE scorerId=" . $userId ))[0]){
+					$userScore = mysqli_fetch_array(mysqli_query($connection, "SELECT score FROM t_scores WHERE scorerId=" . $userId ))[0];
+					echo "<h1>You're number ";
+					//Count the number of people who have equal or higher scores than the current user on the leaderboard
+					echo mysqli_fetch_array(mysqli_query($connection, "SELECT COUNT(*) FROM t_scores WHERE score >=" . $userScore))[0];
+					echo " of ";
+					echo mysqli_fetch_array(mysqli_query($connection, "SELECT COUNT(*) FROM t_scores "))[0];
+					echo " on <a href='leaderboard.php'>the leaderboards</a>!</h1>";
+				}else{
+					echo "<h1>You're not on <a href='leaderboard.php'>the leaderboards</a> yet...</h1>";
+					echo "<h1>Post images, get votes, and soon you'll be there!</h1>";
+				}
+				
+					//Find the filename of the user's avatar
+					switch ($avExt){
+						case 0:	//default
+							$avFile = "default.png";
+							break;
+						case 1:	//jpg
+							$avFile = $userId . ".jpg";
+							break;
+						case 2:	//png
+							$avFile = $userId . ".png";
+							break;
+						case 3:	//gif
+							$avFile = $userId . ".gif";
+							break;
+					}
 						
-						echo "<img src='avatars/" . $avFile . "' width='100' height='100'> </p> <hr> </td> </tr>";
+					echo "<img src='avatars/" . $avFile . "' width='100' height='100'> </p> <hr> </td> </tr>";
 					?>
 					<h3>Change Avatar</h3>
 					<form action="avatar.php" method="post" enctype="multipart/form-data">
 						<input type="file" name="fileToUpload" onchange="form.submit()" id="fileToUpload">
 					</form>
-					<p><a onClick='signOut();' style="cursor: pointer; cursor: hand;">Sign out</a></p>
+					<p><u><a onClick='signOut();' style="cursor: pointer; cursor: hand;">Sign out</a></u></p>
 					<hr>
 			
 			<h1>Images uploaded by <?php echo $username?>.</h1>

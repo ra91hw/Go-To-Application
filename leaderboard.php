@@ -165,13 +165,13 @@ if(isset($_GET["page"])){
 										$avFile = "default.png";
 										break;
 									case 1:	//jpg
-										$avFile = $image["userId"] . ".jpg";
+										$avFile = $highScorer["scorerId"] . ".jpg";
 										break;
 									case 2:	//png
-										$avFile = $image["userId"] . ".png";
+										$avFile = $highScorer["scorerId"] . ".png";
 										break;
 									case 3:	//gif
-										$avFile = $image["userId"] . ".gif";
+										$avFile = $highScorer["scorerId"] . ".gif";
 										break;
 								}
 								

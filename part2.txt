@@ -131,6 +131,21 @@ if(isset($_POST["unvote"])){
 			<div class="content">
 					
 					<?php
+						//Check if the current user is even on the table
+						//This only happens if they have a nonzero score
+						//The following line returns 1 if the user is there, 0 if there are no users (so true and false)
+						if(mysqli_fetch_array(mysqli_query($connection, "SELECT COUNT(*) FROM t_scores WHERE scorerId=" . $profileUser ))[0]){
+							$userScore = mysqli_fetch_array(mysqli_query($connection, "SELECT score FROM t_scores WHERE scorerId=" . $profileUser ))[0];
+							echo "<h1>" . $usernameView . " is number ";
+							//Count the number of people who have equal or higher scores than the current user on the leaderboard
+							echo mysqli_fetch_array(mysqli_query($connection, "SELECT COUNT(*) FROM t_scores WHERE score >=" . $userScore))[0];
+							echo " of ";
+							echo mysqli_fetch_array(mysqli_query($connection, "SELECT COUNT(*) FROM t_scores "))[0];
+							echo " on <a href='leaderboard.php'>the leaderboards</a>!</h1>";
+						}else{
+							echo "<h1>" . $usernameView . " isn't on <a href='leaderboard.php'>the leaderboards</a> yet...</h1>";
+						}
+						
 						if(file_exists ("avatars/" . $profileUser . ".png")){
 							//User has a png avatar
 							echo "<img src='/Go-To-Application/avatars/" . $profileUser . ".png' width='100' height='100'> </p>";
@@ -151,7 +166,7 @@ if(isset($_POST["unvote"])){
 			<h1>Images uploaded by <?php echo $usernameView; ?>.</h1>
 			
 			<?php 				
-				$query = "SELECT CONCAT(newFileName, '.', ext) AS imgname FROM t_files WHERE userId = " . $profileUser . " ORDER BY t_files.uploadtime DESC LIMIT 20 OFFSET " . ($page * 20); //Gets 20 file names including extension, out of those uploaded by the currently logged in user
+				$query = "SELECT CONCAT(newFileName, '.', ext) AS imgname, id FROM t_files WHERE userId = " . $profileUser . " ORDER BY t_files.uploadtime DESC LIMIT 20 OFFSET " . ($page * 20); //Gets 20 file names including extension, out of those uploaded by the currently logged in user
 				$result = mysqli_query($connection, $query);
 				
 				//Note that the full number of photos is yet to be counted, as this is capped at 20. But if there's more than 0, there's more than 0
