@@ -19,7 +19,7 @@ CREATE TABLE t_files(
 CREATE TABLE t_user(
 	id INTEGER,
 	username VARCHAR(80) UNIQUE,
-	password VARCHAR(80),
+	password CHAR(60),
 	email VARCHAR(80),
 	avatar TINYINT(4),
 		PRIMARY KEY (id));
@@ -42,7 +42,7 @@ CREATE VIEW t_scores AS
 SELECT	scorer,
 		scorerId,
 		SUM(photoScores.photoScore) AS score
-FROM	((SELECT COUNT(t_votes.userId)*2) / (DATEDIFF(CURDATE(), DATE(t_files.uploadtime)) + 1) AS photoScore,
+FROM	(SELECT ((COUNT(t_votes.userId)*2) / (DATEDIFF(CURDATE(), DATE(t_files.uploadtime))+1)) AS photoScore,
          	t_user.username AS scorer,
          	t_user.id AS scorerId
 		FROM t_votes
