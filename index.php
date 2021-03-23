@@ -138,7 +138,7 @@ if(isset($_GET["page"])){
 				
 						<h1>Recently uploaded:</h1>
 						<?php 
-							$query = "SELECT CONCAT(path, newFileName, '.', ext) AS imgname, t_files.id AS imgId, t_user.id AS userId, t_user.username AS username, t_user.avatar AS avatarExt FROM t_files JOIN t_user ON t_files.userId=t_user.id LIMIT 20 OFFSET " . ($page*20); //Gets 20 file names including extension
+							$query = "SELECT CONCAT(path, newFileName, '.', ext) AS imgname, t_files.id AS imgId, t_user.id AS userId, t_user.username AS username, t_user.avatar AS avatarExt FROM t_files JOIN t_user ON t_files.userId=t_user.id ORDER BY t_files.uploadtime DESC LIMIT 20 OFFSET " . ($page*20); //Gets 20 file names including extension
 							
 							//Count the results of a different query (since the previous one is limited)
 							$photoCount = mysqli_num_rows(mysqli_query($connection, "SELECT CONCAT(newFileName, '.', ext) AS imgname, t_user.id AS userId, t_user.username AS username FROM t_files JOIN t_user ON t_files.userId=t_user.id"));

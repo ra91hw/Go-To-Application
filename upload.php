@@ -172,7 +172,7 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 										$newId = rand(1, 100000000);
 									}
 									
-									$query = "INSERT INTO t_files (id, oldFileName, newFileName, ext, path, uploadtime, userId) VALUES (" . $newId . ", '" . basename($_FILES["fileToUpload"]["name"]) . "', '" . $new_filename . "', '" . $imageFileType . "', '" . $target_dir . "', '" . date("Y-m-d") . "', " . $userId . ")";
+									$query = "INSERT INTO t_files (id, oldFileName, newFileName, ext, path, uploadtime, userId) VALUES (" . $newId . ", '" . basename($_FILES["fileToUpload"]["name"]) . "', '" . $new_filename . "', '" . $imageFileType . "', '" . $target_dir . "', NOW(), " . $userId . ")";
 									if ($result = mysqli_query($connection, $query)){
 										echo "<p>Image successfully uploaded!</p>";
 									}else{

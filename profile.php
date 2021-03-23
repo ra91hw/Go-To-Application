@@ -149,7 +149,7 @@ if(isset($_GET["page"])){
 			<h1>Images uploaded by <?php echo $username?>.</h1>
 			
 			<?php 				
-				$query = "SELECT CONCAT(newFileName, '.', ext) AS imgname FROM t_files WHERE userId = " . $userId . " LIMIT 20 OFFSET " . ($page * 20); //Gets 20 file names including extension, out of those uploaded by the currently logged in user
+				$query = "SELECT CONCAT(newFileName, '.', ext) AS imgname FROM t_files WHERE userId = " . $userId . " ORDER BY t_files.uploadtime DESC LIMIT 20 OFFSET " . ($page * 20); //Gets 20 file names including extension, out of those uploaded by the currently logged in user
 				$result = mysqli_query($connection, $query);
 				
 				//Note that the full number of photos is yet to be counted, as this is capped at 20. But if there's more than 0, there's more than 0
