@@ -46,7 +46,7 @@ if(isset($_POST["unvote"])){
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale: 1.0">
 		<meta name="Keywords" content="photos, sharing, tags, location">
-		
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
 		<!-- import style sheet -->
 		<link rel="stylesheet" href="stylesheet.css">
 		
@@ -151,7 +151,7 @@ if(isset($_POST["unvote"])){
 			<h1>Images uploaded by <?php echo $usernameView; ?>.</h1>
 			
 			<?php 				
-				$query = "SELECT CONCAT(newFileName, '.', ext) AS imgname FROM t_files WHERE userId = " . $profileUser . " LIMIT 20 OFFSET " . ($page * 20); //Gets 20 file names including extension, out of those uploaded by the currently logged in user
+				$query = "SELECT CONCAT(newFileName, '.', ext) AS imgname FROM t_files WHERE userId = " . $profileUser . " ORDER BY t_files.uploadtime DESC LIMIT 20 OFFSET " . ($page * 20); //Gets 20 file names including extension, out of those uploaded by the currently logged in user
 				$result = mysqli_query($connection, $query);
 				
 				//Note that the full number of photos is yet to be counted, as this is capped at 20. But if there's more than 0, there's more than 0
@@ -159,10 +159,10 @@ if(isset($_POST["unvote"])){
 					echo "<table>"; // begin table
 
 					while($image = mysqli_fetch_array($result)){   // for each image returned
-						echo "<tr> <td> <img src = 'uploads/" . $image['imgname'] . "'>";  //$image['index'] the index here is a field name
+						echo "<tr> <td> <img src = 'uploads/" . $image['imgname'] . "' style='max-height:600px;height:100%'>";  //$image['index'] the index here is a field name
 						
 						//Display vote option
-						if($loggedin && $userId != $image['username']){
+						if($loggedin){
 							$imageId = $image['imgId'];
 							//1 if user has voted on the current image, 0 if not
 							$voted = mysqli_num_rows(mysqli_query($connection, "SELECT * FROM t_votes WHERE userId = " . $userId . " AND photoId = " . $imageId . " LIMIT 1"));

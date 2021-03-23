@@ -108,7 +108,7 @@ if(isset($_POST["email"]) && isset($_POST["username"]) && isset($_POST["password
 	<!-- basic meta data for webpage -->
 	<meta charset="utf-8">
 	<meta name="Keywords" content="photos, sharing, tags, location">
-
+	<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
 	<script>	
 	function validateSignUp() {
 		//var emailAd = document.forms["signUp"]["email"].value;

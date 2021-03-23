@@ -44,6 +44,8 @@ if(isset($_GET["page"])){
 		<!-- import style sheet -->
 		<link rel="stylesheet" href="stylesheet.css">
 		
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
+		
 		<!--FontAwesome 5.7.2-->
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
 		integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
@@ -157,7 +159,7 @@ if(isset($_GET["page"])){
 					echo "<table>"; // begin table
 
 					while($image = mysqli_fetch_array($result)){   // for each image returned
-						echo "<tr> <td> <img src = 'uploads/" . $image['imgname'] . "'>";  //$image['index'] the index here is a field name
+						echo "<tr> <td> <img src = 'uploads/" . $image['imgname'] . "' style='max-height:600px;height:100%'>";  //$image['index'] the index here is a field name
 						echo " </td> </tr>";
 					}
 

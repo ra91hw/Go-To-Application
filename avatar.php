@@ -88,7 +88,7 @@ if(isset($_POST)) {
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale: 1.0">
 		<meta name="Keywords" content="photos, sharing, tags, location">
-		
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
 		<!-- import style sheet -->
 		<link rel="stylesheet" href="stylesheet.css">
 		

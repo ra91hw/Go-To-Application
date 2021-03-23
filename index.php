@@ -155,7 +155,7 @@ if(isset($_GET["page"])){
 									echo "<tr> <td> <img src = '" . $image['imgname'] . "' style='max-height:600px;height:100%'>";  //$image['index'] the index here is a field name
 									
 									//Display vote option
-									if($loggedin && $userId != $image['username']){
+									if($loggedin && $userId != $image['userId']){
 										$imageId = $image['imgId'];
 										//1 if user has voted on the current image, 0 if not
 										$voted = mysqli_num_rows(mysqli_query($connection, "SELECT * FROM t_votes WHERE userId = " . $userId . " AND photoId = " . $imageId . " LIMIT 1"));
@@ -171,8 +171,11 @@ if(isset($_GET["page"])){
 										}
 										echo "</form>";
 									}
-									
-									echo "<p> Uploaded by <a href='" . $image['username'] . ".php'>" . $image['username'] . "</a>  ";
+									if(!$loggedin || $userId != $image['userId']){
+										echo "<p> Uploaded by <a href='" . $image['username'] . ".php'>" . $image['username'] . "</a>  ";
+									}else{
+										echo "<p> Uploaded by <a href='profile.php'>" . $image['username'] . "</a>  ";
+									}
 									
 									//Find the filename of the user's avatar
 									switch ($image['avatarExt']){

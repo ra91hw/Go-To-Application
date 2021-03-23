@@ -32,7 +32,7 @@ if(isset($_POST)) {
 		$uploadOk = 1;
 		
 		// Check file size
-		if ($_FILES["fileToUpload"]["size"] > 500000) {	//This limit can be changed
+		if ($_FILES["fileToUpload"]["size"] > 50000000) {	//This limit can be changed
 			$errorMessage = "File size too large!";
 			$uploadOk = 0;
 		}
@@ -89,7 +89,7 @@ if(isset($_POST)) {
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale: 1.0">
 		<meta name="Keywords" content="photos, sharing, tags, location">
-		
+		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
 		<!-- import style sheet -->
 		<link rel="stylesheet" href="stylesheet.css">
 		
