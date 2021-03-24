@@ -145,9 +145,15 @@ if(isset($_GET["page"])){
 			<div id="pictures" class="pictures">
 				<div class="content">
 					<div id="slideshow">
-						<a><img src="images-slideshow\ocean.jpg" alt="ocean"></a>
-						<a><img src="images-slideshow\forest.jpg" alt="forest"></a>
-						<a><img src="images-slideshow\skyline.jpg" alt="skyline"></a>
+						<?php
+						//Create an array of random (but valid) files
+						$files = glob("uploads/*.*");
+						$file = array_rand($files);
+						//Select three of them (duplicates possible, so that accounts for when there are very few, or no user uploaded files)
+						echo "<a><img src='" . $files[$file] . "'></a>";
+						echo "<a><img src='" . $files[$file] . "'></a>";
+						echo "<a><img src='" . $files[$file] . "'></a>";
+						?>
 					</div>
 				
 						<h1>Recently uploaded:</h1>

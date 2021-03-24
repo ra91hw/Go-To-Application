@@ -161,7 +161,7 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 			<div class="logo">
 				<h1><a href="index.php" style="text-decoration: none !important">Go-To</a></h1>
 				<h2>Photos on the go</h2>
-				<img src="images-slideshow\Go-to logo.png" alt="logo">
+				<img src="uploads\logo.png" alt="logo">
 			</div>
 		</div>
 	</section>

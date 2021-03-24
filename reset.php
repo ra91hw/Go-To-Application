@@ -26,7 +26,7 @@ if(isset($_POST['reset'])){
 
 	//Delete uploaded photographs
 	foreach(glob("uploads/*") as $file ) {
-		if(basename($file) != "dummy.txt"){
+		if(basename($file) != "logo.png"){
 			unlink($file);
 		}
 	}
