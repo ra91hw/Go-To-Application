@@ -1,2 +1,0 @@
-There needs to be an uploads folder for the images to be saved.
-Git ignores empty folders, so this file is just here to make it not be empty.
