@@ -53,7 +53,7 @@ if(isset($_GET["page"])){
 	
 	?>
 	<head>
-		<title>Go-To</title>
+		<title>Animals</title>
 		<!-- basic meta data for webpage -->
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale: 1.0">
@@ -65,20 +65,6 @@ if(isset($_GET["page"])){
 		<!-- import icon -->
 		<link rel="shortcut icon" href="favicon.ico" type="image/x-icon"/>
 		
-		<!-- https://www.w3schools.com/tags/tag_table.asp !-->
-		<!-- In this file only, since it would ruin the look of the index file -->
-		<style>
-		table, th, td {
-		border: 1px solid black;
-		border-collapse: collapse;
-		text-align: center;
-		}
-		
-		table {
-			width: 100%;
-		}
-		</style>
-
 		<!--FontAwesome 5.7.2-->
 		<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
 		integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
@@ -158,55 +144,89 @@ if(isset($_GET["page"])){
 		<section id="content">
 			<div id="pictures" class="pictures">
 				<div class="content">
-					<h1>Top 20:</h1>
-					<?php
-						$query = "SELECT scorer, score, scorerId, t_user.avatar AS avatarExt FROM t_scores JOIN t_user ON t_scores.scorerId = t_user.id ORDER BY score LIMIT 20";
-						$topScorers = mysqli_query($connection, $query);
-						//Count how many scorers there are, up to 20.
-						//This allows for working out if the limit of 20 is reached, and fill it in with blanks if it isn't
-						$scorerCount = mysqli_num_rows($topScorers);
+						<!--The below statement is (arguably) not factually incorrect but it is very odd. I'd reword it if I could think of anything.!-->
+						<h1>No humans are allowed in photos here, but animals can keep photos alive.</h1>
+						<h2>Recently uploaded animal photos:</h2>
+						<?php 
+							$query = "SELECT CONCAT(path, newFileName, '.', ext) AS imgname, t_files.id AS imgId, t_user.id AS userId, t_user.username AS username, t_user.avatar AS avatarExt FROM t_files JOIN t_user ON t_files.userId=t_user.id WHERE category='animals' ORDER BY t_files.uploadtime DESC LIMIT 20 OFFSET " . ($page*20); //Gets 20 file names including extension
 							
-						$position = 1;	//Use this to count the position each user is in
-						echo "<table>"; // begin table
-						echo "<tr> <th>#</th> <th>User</th> <th>Score</th> </tr>";	//Output header row
-						if($scorerCount > 0){
-							//Start adding results from the database - but the table has been started already, as there will always be a table, even without results
-							while($highScorer = mysqli_fetch_array($topScorers)){   // for each of the top 20
+							//Count the results of a different query (since the previous one is limited)
+							$photoCount = mysqli_num_rows(mysqli_query($connection, "SELECT CONCAT(newFileName, '.', ext) AS imgname, t_user.id AS userId, t_user.username AS username FROM t_files JOIN t_user ON t_files.userId=t_user.id WHERE category='animals'"));
+							
+							//NOTE: Tags have NOT yet been implemented on uploading. Once the database supports it, using "SELECT CONCAT(newFileName, '.', ext) AS imgname FROM t_files WHERE [tag field name] = [desired tag name] LIMIT 20" should work. This can be copied across each of the pages on the menu at the side (i.e. for what is currently listed as Ocean, Forest, Skyline and Animals
 								
-								//Find the filename of the user's avatar
-								switch ($highScorer['avatarExt']){
-									case 0:	//default
-										$avFile = "default.png";
-										break;
-									case 1:	//jpg
-										$avFile = $highScorer["scorerId"] . ".jpg";
-										break;
-									case 2:	//png
-										$avFile = $highScorer["scorerId"] . ".png";
-										break;
-									case 3:	//gif
-										$avFile = $highScorer["scorerId"] . ".gif";
-										break;
-								}
 								
-								if($loggedin && $username == $highScorer['scorer']){	//Show the user the profile page if the user on the leaderboard happens to be them
-									echo "<tr> <td> <p>" . $position++ . "</p> </td> <td> <p> <a href='profile.php'>" . $highScorer['scorer'] . "</a> <img src='avatars/" . $avFile . "' width='30' height='30'> </p> </td> <td>" . $highScorer['score'] . "</td> </tr>";  
-								}else{
-									echo "<tr> <td> <p>" . $position++ . "</p> </td> <td> <p> <a href='" . $highScorer['scorer'] . ".php'>" . $highScorer['scorer'] . "</a> <img src='avatars/" . $avFile . "' width='30' height='30'> </p> </td> <td> <p>" . $highScorer['score'] . "</p> </td> </tr>";
+							if($photoCount > 0){
+								$result = mysqli_query($connection, $query);
+
+								echo "<table>"; // begin table
+
+								while($image = mysqli_fetch_array($result)){   // for each image returned
+									echo "<tr> <td> <img src = '" . $image['imgname'] . "' style='max-height:600px;height:100%'>";  //$image['index'] the index here is a field name
+									
+									//Display vote option
+									if($loggedin && $userId != $image['userId']){
+										$imageId = $image['imgId'];
+										//1 if user has voted on the current image, 0 if not
+										$voted = mysqli_num_rows(mysqli_query($connection, "SELECT * FROM t_votes WHERE userId = " . $userId . " AND photoId = " . $imageId . " LIMIT 1"));
+										
+										//Create a link to either vote or unvote an image
+										echo "<form action = '' method = 'POST'>";
+										if ($voted){
+											//User has voted on this image
+											echo "<button name='unvote' type='submit' value=" . $imageId . ">Unvote</button>";
+										}else{
+											//User has not voted on this image
+											echo "<button name='vote' type='submit' value=" . $imageId . ">Vote</button>";
+										}
+										echo "</form>";
+									}
+									if(!$loggedin || $userId != $image['userId']){
+										echo "<p> Uploaded by <a href='" . $image['username'] . ".php'>" . $image['username'] . "</a>  ";
+									}else{
+										echo "<p> Uploaded by <a href='profile.php'>" . $image['username'] . "</a>  ";
+									}
+									
+									//Find the filename of the user's avatar
+									switch ($image['avatarExt']){
+										case 0:	//default
+											$avFile = "default.png";
+											break;
+										case 1:	//jpg
+											$avFile = $image["userId"] . ".jpg";
+											break;
+										case 2:	//png
+											$avFile = $image["userId"] . ".png";
+											break;
+										case 3:	//gif
+											$avFile = $image["userId"] . ".gif";
+											break;
+									}
+									
+									echo "<img src='avatars/" . $avFile . "' width='40' height='40'> </p> <hr> </td> </tr>";
 								}
-								//$position is updated each time it's referenced
+
+								echo "</table> <br>"; // end table
+								
+								//Have options to cycle through pages of results
+								echo "<form action = '' method = 'GET'>";
+								if($page > 0){
+									//Not the first page - can go back any earlier!
+									//Display a previous page button, setting page to the current value of page - 1
+									echo "<button name='page' type='submit' value=" . ($page - 1) . ">Previous</button>";
+								}
+								if(($page + 1) * 20 < $photoCount){
+									//There are photos remaining
+									//Display a previous page button, setting page to the current value of page - 1
+									echo "<button name='page' type='submit' value=" . ($page + 1) . ">Next</button>";
+								}
+								echo "</form>";
+							}else{
+								echo "<p>No photos found...</p>";
 							}
-						}
-						//Fill in the rest of the rows of the table that may have been missed
-						if ($scorerCount < 20){
-							while ($position <= 20){
-								echo "<tr> <td> <p>" . $position++ . "</p> </td> <td> <p> --- <img src='avatars/goto.png' width='30' height='30'> </p> </td> <td> <p> - </p> </td> </tr>"; 
-							}
-						}
-						echo "</table><br>"; // end table (not sure why the <br> is there, but I used it earlier so I guess I'll just leave it. Won't cause any problems at least
-						//Finished with the database
-						mysqli_close($connection); ?>
-					<!--<h1> Content from Database above </h1>!-->
+							//Finished with the database
+							mysqli_close($connection); ?>
+						<!--<h1> Content from Database above </h1>!-->
 				</div>
 			</div>
 		</section>	

@@ -10,6 +10,7 @@ CREATE TABLE t_files(
 	isImg VARCHAR(8),
 	downloadcounts VARCHAR(6),
 	uploadtime DATETIME,
+	category VARCHAR(20),
 	userId INTEGER,
 		PRIMARY KEY (id));
 

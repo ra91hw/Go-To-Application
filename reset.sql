@@ -6,3 +6,4 @@
 TRUNCATE TABLE t_files;
 TRUNCATE TABLE t_user;
 TRUNCATE TABLE t_votes;
+DROP VIEW t_scores;

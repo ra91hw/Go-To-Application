@@ -17,6 +17,9 @@ if (mysqli_connect_errno()) {
 	exit();
 }
 
+//Find the user whose page is being viewed (this will also be in the filename for this page)
+$usernameView = mysqli_fetch_array(mysqli_query($connection, "SELECT username FROM t_user WHERE id=" . $profileUser . ";"))[0];
+			
 //Find the page number of results to display
 if(isset($_GET["page"])){
 	//There's a certain page number of photos to use
@@ -41,7 +44,7 @@ if(isset($_POST["unvote"])){
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Go-To</title>
+		<title><?php echo $usernameView ?>'s Profile</title>
 		<!-- basic meta data for webpage -->
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale: 1.0">
@@ -66,8 +69,6 @@ if(isset($_POST["unvote"])){
 	</head>
 	<body>
 		<?php
-			//Find the user whose page is being viewed (this will also be in the filename for this page)
-			$usernameView = mysqli_fetch_array(mysqli_query($connection, "SELECT username FROM t_user WHERE id=" . $profileUser . ";"))[0];
 			
 			//Being logged in is optional here
 			if(isset($_COOKIE["userId"])){
@@ -104,9 +105,20 @@ if(isset($_POST["unvote"])){
 		<section id="Upload">
 			<div id="uploader" class="uploader">
 				<div class="upload">
-					<h3>Upload a Photo</h3>
+					<h3 style="line-height: 0.7em;">Upload a Photo</h3>
 					<form action="upload.php" method="post" enctype="multipart/form-data">
 						<input type="file" name="fileToUpload" onchange="form.submit()" id="fileToUpload">
+						<label for="cars">Select category:</label>
+						<select id="categories" name="categories">
+							<option value="landscape">Landscape</option>
+							<option value="water">Water</option>
+							<option value="structures">Structures</option>
+							<option value="indoors">Indoors</option>
+							<option value="animals">Animals</option>
+							<option value="wilderness">Wilderness</option>
+							<option value="other" selected>Other</option>
+						</select><br>
+						<input type="submit" value="Go">
 					</form>
 				</div>
 			</div>
@@ -115,12 +127,15 @@ if(isset($_POST["unvote"])){
 		<section id="Popular">
 			<div id="menu" class="menu">
 				<div class="popular">
-					<h3>Popular Channels For You</h3>
+					<h3>Categories</h3>
 					<ul>
-						<li><a href="placeholder">Ocean</a></li>
-						<li><a href="placeholder">Forest</a></li>
-						<li><a href="placeholder">Skyline</a></li>
-						<li><a href="placeholder">Animals</a></li>
+						<li><a href="landscape.php">Landscapes</a></li>
+						<li><a href="water.php">Water</a></li>
+						<li><a href="structures.php">Structures</a></li>
+						<li><a href="indoors.php">Indoors</a></li>
+						<li><a href="animals.php">Animals</a></li>
+						<li><a href="wilderness.php">Wilderness</a></li>
+						<li><a href="other.php">Other</a></li>
 					</ul>
 				</div>
 			</div>

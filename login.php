@@ -176,26 +176,41 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 
 	<section id="Upload">
 		<div id="uploader" class="uploader">
+			<!--I'm pasting this section in here for consistency, but it will never work since you need to be logged in to upload a photo, and logged out to access this page !-->
 			<div class="upload">
-				<h3>Upload a Photo</h3>
-				<form action="upload.php" method="post" enctype="multipart/form-data">
-					<input type="file" name="fileToUpload" onchange="form.submit()" id="fileToUpload">
-				</form>
-			</div>
+					<h3 style="line-height: 0.7em;">Upload a Photo</h3>
+					<form action="upload.php" method="post" enctype="multipart/form-data">
+						<input type="file" name="fileToUpload" onchange="form.submit()" id="fileToUpload">
+						<label for="cars">Select category:</label>
+						<select id="categories" name="categories">
+							<option value="landscape">Landscape</option>
+							<option value="water">Water</option>
+							<option value="structures">Structures</option>
+							<option value="indoors">Indoors</option>
+							<option value="animals">Animals</option>
+							<option value="wilderness">Wilderness</option>
+							<option value="other" selected>Other</option>
+						</select><br>
+						<input type="submit" value="Go">
+					</form>
+				</div>
 		</div>
 	</section>
 
 	<section id="Popular">
 		<div id="menu" class="menu">
 			<div class="popular">
-				<h3>Popular Channels For You</h3>
-				<ul>
-					<li><a href="placeholder">Ocean</a></li>
-					<li><a href="placeholder">Forest</a></li>
-					<li><a href="placeholder">Skyline</a></li>
-					<li><a href="placeholder">Animals</a></li>
-				</ul>
-			</div>
+					<h3>Categories</h3>
+					<ul>
+						<li><a href="landscape.php">Landscapes</a></li>
+						<li><a href="water.php">Water</a></li>
+						<li><a href="structures.php">Structures</a></li>
+						<li><a href="indoors.php">Indoors</a></li>
+						<li><a href="animals.php">Animals</a></li>
+						<li><a href="wilderness.php">Wilderness</a></li>
+						<li><a href="other.php">Other</a></li>
+					</ul>
+				</div>
 		</div>
 	</section>
 	

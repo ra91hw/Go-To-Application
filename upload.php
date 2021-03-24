@@ -17,6 +17,16 @@ if (mysqli_connect_errno()) {
 	exit();
 }
 
+//Check if the cookies currently record the user as being logged in
+if(isset($_COOKIE["userId"])){
+	$loggedin = True; //Logged in as user with the userId value
+	$userId =$_COOKIE["userId"];
+	$result = mysqli_query($connection, "SELECT username FROM t_user WHERE id = " . $userId);
+	$username = mysqli_fetch_array($result)[0];
+	mysqli_free_result($result);
+} else{
+	$loggedin = False;
+}
 
 //https://www.w3schools.com/php/php_file_upload.asp
 $target_dir = "uploads/";
@@ -37,6 +47,12 @@ if(isset($_POST)) {
 			$uploadOk = 0;
 		}
 		
+		// Check that the user is logged in
+		if (!$loggedin){
+			$errorMessage = "You need to log in first!";
+			$uploadOk = 0;
+		}
+		
 		//jpeg and jpg reference the same file format
 		if($imageFileType == "jpeg"){
 			$imageFileType = "jpg";
@@ -47,23 +63,23 @@ if(isset($_POST)) {
 			$errorMessage = "Invalid file format. Please submit a png, jpg or gif!";
 			$uploadOk = 0;
 		}
-		//By this point, the image is confirmed valid
+		//By this point, if uploadOk is still 1, the image is confirmed valid
 		
 		//Create a new name for the file
-		$new_filename = rand(100, 10000000);
-		while (file_exists($target_dir . $new_filename . "." . $imageFileType)) {
-			//This implementation allows for up to 39999600 file names.
-			//That's a maximum of 9999900 for any valid file extension
-			//Finding a new valid image will slow down the closer it gets to the maximum capacity
-			//But it won't realistically reach the maximum capacity so that shouldn't be a concern at this stage
+		if($uploadOk){
 			$new_filename = rand(100, 10000000);
+			while (file_exists($target_dir . $new_filename . "." . $imageFileType)) {
+				//This implementation allows for up to 39999600 file names.
+				//That's a maximum of 9999900 for any valid file extension
+				//Finding a new valid image will slow down the closer it gets to the maximum capacity
+				//But it won't realistically reach the maximum capacity so that shouldn't be a concern at this stage
+				$new_filename = rand(100, 10000000);
+			}
 		}
 	} else {
 		$errorMessage = "File is not an image.";
 		$uploadOk = 0;
 	}
-}else{
-	
 }
 
 
@@ -71,20 +87,8 @@ if(isset($_POST)) {
 
 <!DOCTYPE html>
 <html>
-	<?php
-	//Check if the cookies currently record the user as being logged in
-	if(isset($_COOKIE["userId"])){
-		$loggedin = True; //Logged in as user with the userId value
-		$userId =$_COOKIE["userId"];
-		$result = mysqli_query($connection, "SELECT username FROM t_user WHERE id = " . $userId);
-		$username = mysqli_fetch_array($result)[0];
-		mysqli_free_result($result);
-	} else{
-		$loggedin = False;
-	}
-	?>
 	<head>
-		<title>Go-To</title>
+		<title>Upload Photo</title>
 		<!-- basic meta data for webpage -->
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale: 1.0">
@@ -132,9 +136,20 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 		<section id="Upload">
 			<div id="uploader" class="uploader">
 				<div class="upload">
-					<h3>Upload a Photo</h3>
+					<h3 style="line-height: 0.7em;">Upload a Photo</h3>
 					<form action="upload.php" method="post" enctype="multipart/form-data">
 						<input type="file" name="fileToUpload" onchange="form.submit()" id="fileToUpload">
+						<label for="cars">Select category:</label>
+						<select id="categories" name="categories">
+							<option value="landscape">Landscape</option>
+							<option value="water">Water</option>
+							<option value="structures">Structures</option>
+							<option value="indoors">Indoors</option>
+							<option value="animals">Animals</option>
+							<option value="wilderness">Wilderness</option>
+							<option value="other" selected>Other</option>
+						</select><br>
+						<input type="submit" value="Go">
 					</form>
 				</div>
 			</div>
@@ -143,12 +158,15 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 		<section id="Popular">
 			<div id="menu" class="menu">
 				<div class="popular">
-					<h3>Popular Channels For You</h3>
+					<h3>Categories</h3>
 					<ul>
-						<li><a href="placeholder">Ocean</a></li>
-						<li><a href="placeholder">Forest</a></li>
-						<li><a href="placeholder">Skyline</a></li>
-						<li><a href="placeholder">Animals</a></li>
+						<li><a href="landscape.php">Landscapes</a></li>
+						<li><a href="water.php">Water</a></li>
+						<li><a href="structures.php">Structures</a></li>
+						<li><a href="indoors.php">Indoors</a></li>
+						<li><a href="animals.php">Animals</a></li>
+						<li><a href="wilderness.php">Wilderness</a></li>
+						<li><a href="other.php">Other</a></li>
 					</ul>
 				</div>
 			</div>
@@ -164,7 +182,6 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 								//Attempt to upload the image
 								//echo "<p>" . $_FILES["fileToUpload"]["tmp_name"] . "</p>";
 								if (move_uploaded_file($_FILES["fileToUpload"]["tmp_name"], $target_dir . $new_filename . "." . $imageFileType)) {
-									//MYSQL QUERY HERE
 									$newId = rand(1, 100000000);
 									while(mysqli_num_rows(mysqli_query($connection, "SELECT * FROM t_files WHERE id = " . $newId))){
 										//Far from efficient, change if possible
@@ -172,7 +189,7 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 										$newId = rand(1, 100000000);
 									}
 									
-									$query = "INSERT INTO t_files (id, oldFileName, newFileName, ext, path, uploadtime, userId) VALUES (" . $newId . ", '" . basename($_FILES["fileToUpload"]["name"]) . "', '" . $new_filename . "', '" . $imageFileType . "', '" . $target_dir . "', NOW(), " . $userId . ")";
+									$query = "INSERT INTO t_files (id, oldFileName, newFileName, ext, path, uploadtime, category, userId) VALUES (" . $newId . ", '" . basename($_FILES["fileToUpload"]["name"]) . "', '" . $new_filename . "', '" . $imageFileType . "', '" . $target_dir . "', NOW(), '". $_POST['categories'] . "', " . $userId . ")";
 									if ($result = mysqli_query($connection, $query)){
 										echo "<p>Image successfully uploaded!</p>";
 									}else{
