@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaoniucr.xy.mapper.AlbumMapper">
+
+    <!-- General query mapping results -->
+    <resultMap id="BaseResultMap" type="com.xiaoniucr.xy.entity.Album">
+        <result column="id" property="id"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="user_id" property="userId"/>
+        <result column="category_id" property="categoryId"/>
+        <result column="title" property="title"/>
+        <result column="cover" property="cover"/>
+        <result column="description" property="description"/>
+        <result column="agree_number" property="agreeNumber"/>
+        <result column="discuss_number" property="discussNumber"/>
+        <result column="click_number" property="clickNumber"/>
+        <result column="total_number" property="totalNumber"/>
+        <result column="status" property="status"/>
+        <association property="user" select="com.xiaoniucr.xy.mapper.UserMapper.selectByKey" column="user_id"
+                     javaType="com.xiaoniucr.xy.entity.User"></association>
+        <association property="category" select="com.xiaoniucr.xy.mapper.CategoryMapper.selectByKey" column="category_id"
+                     javaType="com.xiaoniucr.xy.entity.Category"></association>
+        <collection property="discussList" javaType="java.util.ArrayList" ofType="com.xiaoniucr.xy.vo.DiscussVo" select="com.xiaoniucr.xy.mapper.DiscussMapper.selectDiscussList" column="id"/>
+    </resultMap>
+
+    <!-- General query result column -->
+    <sql id="Base_Column_List">
+        id,
+        create_time,
+        update_time,
+        user_id, category_id, title, cover, description, agree_number, discuss_number, click_number, total_number, status
+    </sql>
+
+
+    <select id="queryList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from xy_album
+        <where>
+            <if test='userId != null and userId != ""'>
+                and user_id = #{userId}
+            </if>
+            <if test='status != null and status != ""'>
+                and status = #{status}
+            </if>
+            <if test='categoryId != null and categoryId != ""'>
+                and category_id = #{categoryId}
+            </if>
+            <if test='title != null and title !=""'>
+                and title like concat('%',#{title},'%')
+            </if>
+        </where>
+        order by create_time desc
+        <if test="start != null and limit != null">
+            limit #{start}, #{limit}
+        </if>
+    </select>
+
+    <select id="queryTotal" resultType="java.lang.Integer">
+
+        select count(*) from xy_album
+        <where>
+            <if test='userId != null and userId != ""'>
+                and user_id = #{userId}
+            </if>
+            <if test='status != null and status != ""'>
+                and status = #{status}
+            </if>
+            <if test='categoryId != null and categoryId != ""'>
+                and category_id = #{categoryId}
+            </if>
+            <if test='title != null and title !=""'>
+                and title like concat('%',#{title},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectByKey" resultMap="BaseResultMap">
+        select * from xy_album where id = #{id}
+    </select>
+
+    <select id="selectByCid" resultMap="BaseResultMap">
+        select * from xy_album where category_id = #{categoryId}
+    </select>
+
+
+    <select id="selectPreAlbum" resultMap="BaseResultMap">
+        select * from xy_album where id <![CDATA[ > ]]> #{id} order by id desc limit 1;
+    </select>
+
+    <select id="selectNextAlbum" resultMap="BaseResultMap">
+        select * from xy_album where id <![CDATA[ < ]]> #{id} order by id desc limit 1;
+    </select>
+
+
+    <select id="selectLatestList" resultMap="BaseResultMap">
+        select * from xy_album order by create_time desc limit #{limit}
+    </select>
+
+    <select id="selectDiscussNumberTopList" resultMap="BaseResultMap">
+        select * from xy_album order by discuss_number desc limit #{limit}
+    </select>
+
+
+    <select id="selectLikeTopList" resultMap="BaseResultMap">
+        select * from xy_album order by agree_number desc limit #{limit}
+    </select>
+
+    <select id="selectClickTopList" resultMap="BaseResultMap">
+        select * from xy_album order by click_number desc limit #{limit}
+    </select>
+
+
+
+
+</mapper>

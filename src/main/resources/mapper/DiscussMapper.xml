@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaoniucr.xy.mapper.DiscussMapper">
+
+    <!-- General query result -->
+    <resultMap id="BaseResultMap" type="com.xiaoniucr.xy.entity.Discuss">
+        <result column="id" property="id"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="album_id" property="albumId"/>
+        <result column="user_id" property="userId"/>
+        <result column="pid" property="pid"/>
+        <result column="content" property="content"/>
+        <association property="user" select="com.xiaoniucr.xy.mapper.UserMapper.selectByKey" column="user_id"
+                     javaType="com.xiaoniucr.xy.entity.User"></association>
+    </resultMap>
+
+    <!-- General query result column -->
+    <sql id="Base_Column_List">
+        id,
+        create_time,
+        update_time,
+        album_id, user_id, pid, content
+    </sql>
+
+
+    <select id="selectDiscussList" resultType="com.xiaoniucr.xy.vo.DiscussVo">
+        SELECT m.*,n.nickname as beReplyNickname
+        from
+        (
+            SELECT
+            a.id,
+            a.content,
+            a.user_id AS disId,
+            b.nickname AS disNickname,
+            b.avatar AS disAvatar,
+            case when a.pid =0 then 0 else 1 end as disType,
+            c.user_id as beReplyId,
+            a.create_time,
+            a.album_id
+            FROM
+                `xy_discuss` a
+            INNER JOIN xy_user b ON a.user_id = b.id
+            LEFT JOIN xy_discuss c ON a.pid = c.id
+        )m
+        LEFT JOIN xy_user n on m.beReplyId = n.id where m.album_id=#{albumId} order by m.create_time desc
+    </select>
+
+
+    
+    <select id="selectByKey" resultMap="BaseResultMap">
+        select * from xy_discuss where id=#{id};
+    </select>
+
+
+    <select id="selectLatestList" resultMap="BaseResultMap">
+        select * from xy_discuss order by create_time desc limit #{limit}
+    </select>
+
+    <delete id="deleteByBlog">
+        delete from xy_discuss where album_id = #{albumId}
+    </delete>
+</mapper>

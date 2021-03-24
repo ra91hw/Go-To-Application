@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaoniucr.xy.mapper.CategoryMapper">
+
+    <!-- General query results -->
+    <resultMap id="BaseResultMap" type="com.xiaoniucr.xy.entity.Category">
+        <result column="id" property="id"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="name" property="name"/>
+        <result column="description" property="description"/>
+        <result column="sort" property="sort"/>
+        <result column="icon" property="icon"/>
+        <result column="status" property="status"/>
+    </resultMap>
+
+    <!-- General query result column -->
+    <sql id="Base_Column_List">
+        id,
+        create_time,
+        update_time,
+        name, description, sort, icon, status
+    </sql>
+
+
+    <select id="queryList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from xy_category
+        <where>
+            <if test='name != null and name != ""'>
+                and name like concat('%',#{name},'%')
+            </if>
+            <if test='status != null and status != ""'>
+                and status = #{status}
+            </if>
+        </where>
+        order by create_time asc
+        <if test="start != null and limit != null">
+            limit #{start}, #{limit}
+        </if>
+    </select>
+
+    <select id="queryTotal" resultType="java.lang.Integer">
+
+        select count(*) from xy_category
+        <where>
+            <if test='name != null and name != ""'>
+                and name like concat('%',#{name},'%')
+            </if>
+            <if test='status != null and status != ""'>
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+
+
+    <select id="selectByKey" resultMap="BaseResultMap">
+        select * from xy_category where id = #{id}
+    </select>
+
+
+    <select id="selectByName" resultMap="BaseResultMap">
+        select * from xy_category where name = #{name}
+    </select>
+
+
+    <select id="selectAll" resultMap="BaseResultMap">
+        select * from xy_category order by sort asc
+    </select>
+
+
+
+
+
+
+</mapper>

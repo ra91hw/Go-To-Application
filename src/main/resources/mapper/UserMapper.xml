@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaoniucr.xy.mapper.UserMapper">
+
+    <!-- General query result -->
+    <resultMap id="BaseResultMap" type="com.xiaoniucr.xy.entity.User">
+        <result column="id" property="id"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="username" property="username"/>
+        <result column="nickname" property="nickname"/>
+        <result column="password" property="password"/>
+        <result column="telphone" property="telphone"/>
+        <result column="email" property="email"/>
+        <result column="avatar" property="avatar"/>
+        <result column="school" property="school"/>
+        <result column="professional" property="professional"/>
+        <result column="introduce" property="introduce"/>
+        <result column="type" property="type"/>
+        <result column="visit_number" property="visitNumber"/>
+        <result column="status" property="status"/>
+    </resultMap>
+
+    <!-- General query result column -->
+    <sql id="Base_Column_List">
+        id,
+        create_time,
+        update_time,
+        username, nickname, password, telphone, email, avatar,school,professional,introduce, type, visit_number,status
+    </sql>
+
+
+    <select id="queryList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from xy_user
+        <where>
+            <if test='nickname != null and nickname !=""'>
+                and nickname like concat('%',#{nickname},'%')
+            </if>
+            <if test='type != null and type !="" and type !=0 '>
+                and type = #{type}
+            </if>
+            <if test='status != null and status !="" and status !=0'>
+                and status = #{status}
+            </if>
+        </where>
+        order by create_time desc
+        <if test="start != null and limit != null">
+            limit #{start}, #{limit}
+        </if>
+    </select>
+
+    <select id="queryTotal" resultType="java.lang.Integer">
+
+        select count(*) from xy_user
+        <where>
+            <if test='nickname != null and nickname !=""'>
+                and nickname like concat('%',#{nickname},'%')
+            </if>
+            <if test='type != null and type !="" and type !=0 '>
+                and type = #{type}
+            </if>
+            <if test='status != null and status !="" and status !=0'>
+                and status = #{status}
+            </if>
+        </where>
+    </select>
+
+    <select id="selectByUsername" resultMap="BaseResultMap">
+        select * from xy_user where username = #{username}
+    </select>
+
+    <select id="selectByKey" resultMap="BaseResultMap">
+        select * from xy_user where id = #{id}
+    </select>
+
+
+
+</mapper>

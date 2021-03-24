@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+    <!-- Configuring global properties -->
+    <settings>
+        <!-- Open the cache -->
+        <setting name="cacheEnabled" value="false"/>
+        <!-- Database connection timeout configuration -->
+        <setting name="defaultStatementTimeout" value="3000"/>
+        <!-- Use jdbc's getGeneratedKeys to get the database auto-incrementing primary key value -->
+        <setting name="useGeneratedKeys" value="true" />
+        <!-- Use column alias to replace column name Default: true -->
+        <setting name="useColumnLabel" value="true" />
+        <!-- Turn on camel case naming conversion: Table{create_time} -> Entity{createTime} -->
+        <setting name="mapUnderscoreToCamelCase" value="true" />
+        <!-- Print SQL statement -->
+        <setting name="logImpl" value="STDOUT_LOGGING" />
+    </settings>
+
+</configuration>

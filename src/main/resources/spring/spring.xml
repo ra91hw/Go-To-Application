@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:aop="http://www.springframework.org/schema/aop" xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop.xsd http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+
+    <!-- Load database settings -->
+    <context:property-placeholder location="classpath:config.properties"/>
+
+    <!-- Configure data source, database connection pool -->
+    <bean id="dataSource" class="com.alibaba.druid.pool.DruidDataSource" destroy-method="close">
+        <!--Database driven-->
+        <property name="driverClassName" value="${jdbc.driver}"/>
+        <!--Database link address-->
+        <property name="url" value="${jdbc.url}"/>
+        <!--database username-->
+        <property name="username" value="${jdbc.username}"/>
+        <!--Database connection password-->
+        <property name="password" value="${jdbc.password}"/>
+        <!--Initial connection pool size-->
+        <property name="initialSize" value="${jdbc.initialSize}"/>
+        <!--Minimum number of connection pool-->
+        <property name="minIdle" value="${jdbc.minIdle}" />
+        <!--Maximum number of connection pools-->
+        <property name="maxActive" value="${jdbc.maxActive}"/>
+        <!--Connection pool waiting timeout-->
+        <property name="maxWait" value="${jdbc.maxWait}"/>
+        <!--Configure how long the interval is to perform a test, the test needs to close idle connections, the unit is milliseconds-->
+        <property name="timeBetweenEvictionRunsMillis" value="${jdbc.timeBetweenEvictionRunsMillis}"/>
+        <property name="minEvictableIdleTimeMillis" value="${jdbc.minEvictableIdleTimeMillis}"/>
+        <property name="testWhileIdle" value="${jdbc.testWhileIdle}"/>
+        <property name="validationQuery" value="${jdbc.validationQuery}"/>
+        <property name="testOnReturn" value="${jdbc.testOnReturn}"/>
+        <!--Open PSCache and specify the size of PSCache on each connection-->
+        <property name="poolPreparedStatements" value="${jdbc.poolPreparedStatements}"/>
+        <property name="maxPoolPreparedStatementPerConnectionSize" value="${jdbc.maxPoolPreparedStatementPerConnectionSize}"/>
+        <!--Configure filters for monitoring statistics interception-->
+        <property name="filters" value="${jdbc.filters}"/>
+    </bean>
+
+
+    <!-- Spring integrates Mybatis -->
+    <bean id="sqlSessionFactory" class="com.baomidou.mybatisplus.spring.MybatisSqlSessionFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <!-- Automatically scan the Mapping.xml file -->
+        <property name="mapperLocations" value="classpath:mapper/*.xml"/>
+        <property name="configLocation" value="classpath:mybatis/mybatis-config.xml"/>
+        <property name="typeAliasesPackage" value="com.xiaoniucr.xy.entity"/>
+        <!--<property name="typeEnumsPackage" value="com.baomidou.springmvc.model.enums"/>-->
+        <property name="plugins">
+            <array>
+                <!-- Paging plugin configuration -->
+                <bean id="paginationInterceptor" class="com.baomidou.mybatisplus.plugins.PaginationInterceptor">
+                </bean>
+            </array>
+        </property>
+        <!-- Global configuration injection -->
+        <property name="globalConfig" ref="globalConfig" />
+    </bean>
+    <bean id="globalConfig" class="com.baomidou.mybatisplus.entity.GlobalConfiguration">
+        <!--
+            AUTO->`0`("Database ID self-increment")
+             INPUT->`1` (User input ID")
+            ID_WORKER->`2`("Globally Unique ID")
+            UUID->`3`("Globally Unique ID")
+        -->
+        <property name="idType" value="2" />
+    </bean>
+
+    <!-- MyBatis dynamic scan  -->
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.xiaoniucr.xy.mapper"/>
+    </bean>
+
+    <!-- Configuration transaction management -->
+    <bean name="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
+        <property name="dataSource" ref="dataSource"/>
+    </bean>
+
+    <!-- Transaction management attributes -->
+    <tx:advice id="transactionAdvice" transaction-manager="transactionManager">
+        <tx:attributes>
+            <tx:method name="add*" propagation="REQUIRED"/>
+            <tx:method name="append*" propagation="REQUIRED"/>
+            <tx:method name="save*" propagation="REQUIRED"/>
+            <tx:method name="update*" propagation="REQUIRED"/>
+            <tx:method name="modify*" propagation="REQUIRED"/>
+            <tx:method name="edit*" propagation="REQUIRED"/>
+            <tx:method name="insert*" propagation="REQUIRED"/>
+            <tx:method name="delete*" propagation="REQUIRED"/>
+            <tx:method name="remove*" propagation="REQUIRED"/>
+            <tx:method name="repair" propagation="REQUIRED"/>
+
+            <tx:method name="get*" propagation="REQUIRED" read-only="true"/>
+            <tx:method name="find*" propagation="REQUIRED" read-only="true"/>
+            <tx:method name="load*" propagation="REQUIRED" read-only="true"/>
+            <tx:method name="search*" propagation="REQUIRED" read-only="true"/>
+            <tx:method name="datagrid*" propagation="REQUIRED" read-only="true"/>
+        </tx:attributes>
+    </tx:advice>
+
+    <!-- Configuration aspect -->
+    <aop:config>
+        <aop:pointcut id="transactionPointcut" expression="execution(* com.xiaoniucr.xy.service..*.*(..))"/>
+        <aop:advisor pointcut-ref="transactionPointcut" advice-ref="transactionAdvice"/>
+    </aop:config>
+
+</beans>

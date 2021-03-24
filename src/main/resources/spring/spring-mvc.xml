@@ -1,0 +1,125 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+		http://www.springframework.org/schema/beans/spring-beans-3.2.xsd
+		http://www.springframework.org/schema/mvc
+		http://www.springframework.org/schema/mvc/spring-mvc-3.2.xsd
+		http://www.springframework.org/schema/context
+		http://www.springframework.org/schema/context/spring-context-3.2.xsd">
+
+
+    <mvc:annotation-driven />
+
+    <!-- Configure component scanning, only Controller annotations are scanned in the springmvc container -->
+    <context:component-scan base-package="com.xiaoniucr.xy"/>
+
+    <!-- Configure access to static resources -->
+    <mvc:default-servlet-handler/>
+
+    <!-- Annotation Driven -->
+    <mvc:annotation-driven>
+        <mvc:message-converters register-defaults="true">
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+                <constructor-arg value="UTF-8" />
+            </bean>
+            <!-- The default formatted output of Jackson2HttpMessageConverter is false -->
+            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
+                <!--Avoid downloading files when returning JSON when IE executes AJAX -->
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>application/json;charset=UTF-8</value>
+                        <value>text/html;charset=UTF-8</value>
+                    </list>
+                </property>
+                <property name="prettyPrint" value="false"/>
+                <!-- Process the date type in responseBody and set the date in the specified date format -->
+                <property name="objectMapper">
+                    <!-- You can use your own Mapper and implement it by inheriting ObjectMapper -->
+                    <bean class="com.fasterxml.jackson.databind.ObjectMapper" id="objectMapper">
+                        <!-- Jackson's default return date is a Long timestamp -->
+                        <!-- If the personal field needs to return another form of date format, you can use the @JsonFormat annotation on the field property -->
+                        <property name="dateFormat">
+                            <bean class="java.text.SimpleDateFormat">
+                                <constructor-arg type="java.lang.String" value="dd-MM-yyyy HH:mm:ss" />
+                            </bean>
+                        </property>
+                    </bean>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+
+
+
+    <!-- Configure the view resolver to parse the jsp view, use the jstl tag by default, and have the jstl package under the classpath-->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!-- Configure the prefix and suffix of the jsp file -->
+        <property name="prefix" value="/WEB-INF/views/"/>
+        <property name="suffix" value=".jsp"/>
+        <property name="order" value="1"/>
+    </bean>
+
+
+
+
+    <!-- Configure the global exception handler as long as it implements the HandlerExceptionResolver interface is a global exception handler class, each system can only have one global exception handler class-->
+    <!--<bean class="com.hafiz.www.exception.CustomExceptionResolver"/>-->
+
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/static/**"/>
+            <mvc:exclude-mapping path="/index.html"/>
+            <mvc:exclude-mapping path="/album.html"/>
+            <mvc:exclude-mapping path="/album/piclist.html"/>
+            <mvc:exclude-mapping path="/notice/**"/>
+            <mvc:exclude-mapping path="/login.html"/>
+            <mvc:exclude-mapping path="/register.html"/>
+            <mvc:exclude-mapping path="/signin"/>
+            <mvc:exclude-mapping path="/signup"/>
+            <mvc:exclude-mapping path="/signout"/>
+            <mvc:exclude-mapping path="/admin/login.html"/>
+            <mvc:exclude-mapping path="/admin/login"/>
+            <mvc:exclude-mapping path="/admin/logout"/>
+            <mvc:exclude-mapping path="/favicon.ico"/>
+            <bean class="com.xiaoniucr.xy.core.interceptor.LoginInterceptor"></bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+    <mvc:interceptors>
+        <mvc:interceptor>
+            <mvc:mapping path="/**"/>
+            <mvc:exclude-mapping path="/static/**"/>
+            <mvc:exclude-mapping path="/favicon.ico"/>
+            <bean class="com.xiaoniucr.xy.core.interceptor.DataInitInterceptor"></bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+
+    <!-- Configuration file upload -->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!-- Set the maximum size of the uploaded file to 5MB -->
+        <property name="maxUploadSize">
+            <value>5242880</value>
+        </property>
+    </bean>
+
+    <!-- Kaptcha verification code generator -->
+    <bean name="producer" class="com.google.code.kaptcha.impl.DefaultKaptcha" scope="singleton">
+        <property name="config">
+            <bean class="com.google.code.kaptcha.util.Config">
+                <constructor-arg>
+                    <props>
+                        <prop key="kaptcha.border">no</prop>
+                        <prop key="kaptcha.textproducer.font.color">black</prop>
+                        <prop key="kaptcha.textproducer.char.space">5</prop>
+                    </props>
+                </constructor-arg>
+            </bean>
+        </property>
+    </bean>
+
+</beans>
