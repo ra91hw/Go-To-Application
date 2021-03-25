@@ -53,7 +53,7 @@ if(isset($_GET["page"])){
 	
 	?>
 	<head>
-		<title>Other</title>
+		<title>Messages</title>
 		<!-- basic meta data for webpage -->
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale: 1.0">
@@ -146,15 +146,14 @@ if(isset($_GET["page"])){
 		<section id="content">
 			<div id="pictures" class="pictures">
 				<div class="content">
-						<!--The below statement is (arguably) not factually incorrect but it is very odd. I'd reword it if I could think of anything.!-->
-						<h1>For pictures that don't belong in any other category.</h1>
-						<h2>Recently uploaded photos:</h2>
+						<h1>For photographs of messages. Write a message on paper, frame it with a nice background, then post it here!</h1>
+						<h2>Recently uploaded messages:</h2>
 						<?php 
-							$query = "SELECT CONCAT(path, newFileName, '.', ext) AS imgname, t_files.id AS imgId, t_user.id AS userId, t_user.username AS username, t_user.avatar AS avatarExt FROM t_files JOIN t_user ON t_files.userId=t_user.id WHERE category='other' ORDER BY t_files.uploadtime DESC LIMIT 20 OFFSET " . ($page*20); //Gets 20 file names including extension
+							$query = "SELECT CONCAT(path, newFileName, '.', ext) AS imgname, t_files.id AS imgId, t_user.id AS userId, t_user.username AS username, t_user.avatar AS avatarExt FROM t_files JOIN t_user ON t_files.userId=t_user.id WHERE category='messages' ORDER BY t_files.uploadtime DESC LIMIT 20 OFFSET " . ($page*20); //Gets 20 file names including extension
 							
 
 							//Count the results of a different query (since the previous one is limited)
-							$photoCount = mysqli_num_rows(mysqli_query($connection, "SELECT CONCAT(newFileName, '.', ext) AS imgname, t_user.id AS userId, t_user.username AS username FROM t_files JOIN t_user ON t_files.userId=t_user.id WHERE category='other'"));
+							$photoCount = mysqli_num_rows(mysqli_query($connection, "SELECT CONCAT(newFileName, '.', ext) AS imgname, t_user.id AS userId, t_user.username AS username FROM t_files JOIN t_user ON t_files.userId=t_user.id WHERE category='messages'"));
 							//NOTE: Tags have NOT yet been implemented on uploading. Once the database supports it, using "SELECT CONCAT(newFileName, '.', ext) AS imgname FROM t_files WHERE [tag field name] = [desired tag name] LIMIT 20" should work. This can be copied across each of the pages on the menu at the side (i.e. for what is currently listed as Ocean, Forest, Skyline and Animals
 								
 								

@@ -88,8 +88,8 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 	</section>
 
 	<section id="Upload">
-		<div id="uploader" class="uploader">
-			<div class="upload">
+			<div id="uploader" class="uploader">
+				<div class="upload">
 					<h3 style="line-height: 0.7em;">Upload a Photo</h3>
 					<form action="upload.php" method="post" enctype="multipart/form-data">
 						<input type="file" name="fileToUpload" onchange="form.submit()" id="fileToUpload">
@@ -101,17 +101,18 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 							<option value="indoors">Indoors</option>
 							<option value="animals">Animals</option>
 							<option value="wilderness">Wilderness</option>
-							<option value="other" selected>Other</option>
+							<option value="messages">Messages</option>
+							<option value="messages" selected>Other</option>
 						</select><br>
 						<input type="submit" value="Go">
 					</form>
 				</div>
-		</div>
-	</section>
-
-	<section id="Popular">
-		<div id="menu" class="menu">
-			<div class="popular">
+			</div>
+		</section>
+		
+		<section id="Popular">
+			<div id="menu" class="menu">
+				<div class="popular">
 					<h3>Categories</h3>
 					<ul>
 						<li><a href="landscape.php">Landscapes</a></li>
@@ -120,11 +121,12 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 						<li><a href="indoors.php">Indoors</a></li>
 						<li><a href="animals.php">Animals</a></li>
 						<li><a href="wilderness.php">Wilderness</a></li>
-						<li><a href="other.php">Other</a></li>
+						<li><a href="messages.php">Messages</a></li>
+						<li><a href="messages.php">Other</a></li>
 					</ul>
 				</div>
-		</div>
-	</section>
+			</div>
+		</section>
 	
 		<section id="content">
 		<div id="pictures" class="pictures">

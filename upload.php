@@ -147,7 +147,8 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 							<option value="indoors">Indoors</option>
 							<option value="animals">Animals</option>
 							<option value="wilderness">Wilderness</option>
-							<option value="other" selected>Other</option>
+							<option value="messages">Messages</option>
+							<option value="messages" selected>Other</option>
 						</select><br>
 						<input type="submit" value="Go">
 					</form>
@@ -166,7 +167,8 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 						<li><a href="indoors.php">Indoors</a></li>
 						<li><a href="animals.php">Animals</a></li>
 						<li><a href="wilderness.php">Wilderness</a></li>
-						<li><a href="other.php">Other</a></li>
+						<li><a href="messages.php">Messages</a></li>
+						<li><a href="messages.php">Other</a></li>
 					</ul>
 				</div>
 			</div>
