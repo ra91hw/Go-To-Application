@@ -71,6 +71,16 @@ if(isset($_GET["page"])){
 				$username = mysqli_fetch_array(mysqli_query($connection, "SELECT username FROM t_user WHERE id=" . $userId . ";"))[0];
 				$avExt = mysqli_fetch_array(mysqli_query($connection, "SELECT avatar FROM t_user WHERE id=" . $userId . ";"))[0];
 			}
+			
+			//Delete files when appropriate
+			if(isset($_POST["delete"])){
+				//Find the name of the image to delete
+				$imageToDelete = mysqli_fetch_array(mysqli_query($connection, "SELECT CONCAT(newFileName, '.', ext) AS imgname FROM t_files WHERE t_files.id = " . $_POST["delete"] . " LIMIT 1"))[0];
+				//Delete it locally
+				unlink("uploads/" . $imageToDelete);
+				//Delete the record of it from the database
+				mysqli_query($connection, "DELETE FROM t_files WHERE t_files.id = " . $_POST["delete"]);
+			}
 		?>
 		<section id="logo">
 			<div id="header" class="header">
@@ -182,7 +192,7 @@ if(isset($_GET["page"])){
 			<h1>Images uploaded by <?php echo $username?>.</h1>
 			
 			<?php 				
-				$query = "SELECT CONCAT(newFileName, '.', ext) AS imgname FROM t_files WHERE userId = " . $userId . " ORDER BY t_files.uploadtime DESC LIMIT 20 OFFSET " . ($page * 20); //Gets 20 file names including extension, out of those uploaded by the currently logged in user
+				$query = "SELECT CONCAT(newFileName, '.', ext) AS imgname, t_files.id AS imgid FROM t_files WHERE userId = " . $userId . " ORDER BY t_files.uploadtime DESC LIMIT 20 OFFSET " . ($page * 20); //Gets 20 file names including extension, out of those uploaded by the currently logged in user
 				$result = mysqli_query($connection, $query);
 				
 				//Note that the full number of photos is yet to be counted, as this is capped at 20. But if there's more than 0, there's more than 0
@@ -191,7 +201,7 @@ if(isset($_GET["page"])){
 
 					while($image = mysqli_fetch_array($result)){   // for each image returned
 						echo "<tr> <td> <img src = 'uploads/" . $image['imgname'] . "' style='max-height:600px;height:100%'>";  //$image['index'] the index here is a field name
-						echo " </td> </tr>";
+						echo "<form action='' method='post'><button name='delete' type='submit' value=" . $image['imgid'] . ">Delete</button></form> </td> </tr>";
 					}
 
 					echo "</table>"; // end table
