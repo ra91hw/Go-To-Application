@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaoniucr.xy.mapper.BannerMapper">
+
+    <!-- General query result column -->
+    <resultMap id="BaseResultMap" type="com.xiaoniucr.xy.entity.Banner">
+        <result column="id" property="id"/>
+        <result column="create_time" property="createTime"/>
+        <result column="title" property="title"/>
+        <result column="url" property="url"/>
+        <result column="link" property="link"/>
+        <result column="status" property="status"/>
+        <result column="update_time" property="updateTime"/>
+    </resultMap>
+
+    <!-- General query result column -->
+    <sql id="Base_Column_List">
+        id,
+        create_time,
+        title, url, link, status, update_time
+    </sql>
+
+
+    <select id="queryList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List" />
+        from xy_banner
+        <where>
+            <if test="status != 0 and status != null">
+                and status = #{status}
+            </if>
+            <if test="title != null and title != ''">
+                and title like concat('%',#{title},'%')
+            </if>
+        </where>
+        order by create_time desc
+        <if test="start != null and limit != null">
+            limit #{start}, #{limit}
+        </if>
+    </select>
+
+
+    <select id="queryTotal" resultType="java.lang.Integer">
+
+        select count(*) from xy_banner
+        <where>
+            <if test="status != 0 and status != null">
+                and status = #{status}
+            </if>
+            <if test="title != null and title != ''">
+                and title like concat('%',#{title},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectTopNewList" resultMap="BaseResultMap">
+        select * from xy_banner where status = 1 order by create_time desc limit 0,#{limit}
+    </select>
+
+</mapper>

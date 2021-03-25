@@ -1,0 +1,116 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+        "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="keywords" content=""/>
+    <meta name="description" content=""/>
+    <title>map</title>
+    <style type="text/css">
+        html, body {
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+        }
+    </style>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?key=&v=1.1&services=true"></script>
+</head>
+
+<body onload="initMap();">
+<!--Baidu map container-->
+<div style="width:697px;height:550px;border:#ccc solid 1px;" id="dituContent"></div>
+</body>
+<script type="text/javascript">
+    function getParam(name) {
+        return location.href.match(new RegExp('[?#&]' + name + '=([^?#&]+)', 'i')) ? RegExp.$1 : '';
+    }
+    var map, marker;
+    var centerParam = getParam('center');
+    var zoomParam = getParam('zoom');
+    var widthParam = getParam('width');
+    var heightParam = getParam('height');
+    var markersParam = getParam('markers');
+    var markerStylesParam = getParam('markerStyles');
+
+    //Create and initialize the map function:
+    function initMap() {
+        if (!window.BMap) {
+            return;
+        }
+        var dituContent = document.getElementById('dituContent');
+        dituContent.style.width = widthParam + 'px';
+        dituContent.style.height = heightParam + 'px';
+
+        createMap();//reate a map
+        setMapEvent();//Set map event
+        addMapControl();//Add controls to the map
+
+        // Create label
+        var markersArr = markersParam.split(',');
+        var point = new BMap.Point(markersArr[0], markersArr[1]);
+        marker = new BMap.Marker(point);
+        marker.enableDragging();
+        map.addOverlay(marker); // Add labels to the map
+
+        if(parent.editor && parent.document.body.contentEditable=="true") { //在编辑状态下
+            setMapListener();//Map changes modify the outer iframe tag src attribute
+        }
+    }
+
+   //Create a map function:
+    function createMap() {
+        map = new BMap.Map("dituContent");////Create a map in the Baidu map container
+        var centerArr = centerParam.split(',');
+        var point = new BMap.Point(parseFloat(centerArr[0]), parseFloat(centerArr[1]));//Define a center point coordinate
+        map.centerAndZoom(point, parseInt(zoomParam));//Set the center point and coordinates of the map and display the map in the map container
+    }
+
+    //Map event setting function:
+    function setMapEvent() {
+        map.enableDragging();
+        map.enableScrollWheelZoom();//Enable the map wheel to zoom in and out
+        map.enableDoubleClickZoom();//Enable mouse double click to zoom, enabled by default (can not write)
+        map.enableKeyboard();//Enable the keyboard up, down, left and right keys to move the map
+    }
+
+    //Map control add function:
+    function addMapControl() {
+        //Add zoom controls to the map
+        var ctrl_nav = new BMap.NavigationControl({anchor: BMAP_ANCHOR_TOP_LEFT, type: BMAP_NAVIGATION_CONTROL_LARGE});
+        map.addControl(ctrl_nav);
+        //Add a thumbnail control to the map
+        var ctrl_ove = new BMap.OverviewMapControl({anchor: BMAP_ANCHOR_BOTTOM_RIGHT, isOpen: 1});
+        map.addControl(ctrl_ove);
+        //Add a scale control to the map
+        var ctrl_sca = new BMap.ScaleControl({anchor: BMAP_ANCHOR_BOTTOM_LEFT});
+        map.addControl(ctrl_sca);
+    }
+
+    function setMapListener() {
+        var editor = parent.editor, containerIframe,
+            iframes = parent.document.getElementsByTagName('iframe');
+        for (var key in iframes) {
+            if (iframes[key].contentWindow == window) {
+                containerIframe = iframes[key];
+                break;
+            }
+        }
+        if (containerIframe) {
+            map.addEventListener('moveend', mapListenerHandler);
+            map.addEventListener('zoomend', mapListenerHandler);
+            marker.addEventListener('dragend', mapListenerHandler);
+        }
+
+        function mapListenerHandler() {
+            var zoom = map.getZoom(),
+                center = map.getCenter(),
+                marker = window.marker.getPoint();
+            containerIframe.src = containerIframe.src.
+                replace(new RegExp('([?#&])center=([^?#&]+)', 'i'), '$1center=' + center.lng + ',' + center.lat).
+                replace(new RegExp('([?#&])markers=([^?#&]+)', 'i'), '$1markers=' + marker.lng + ',' + marker.lat).
+                replace(new RegExp('([?#&])zoom=([^?#&]+)', 'i'), '$1zoom=' + zoom);
+            editor.fireEvent('saveScene');
+        }
+    }
+</script>
+</html>

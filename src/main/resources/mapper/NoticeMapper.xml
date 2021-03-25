@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaoniucr.xy.mapper.NoticeMapper">
+
+    <!-- General query result -->
+    <resultMap id="BaseResultMap" type="com.xiaoniucr.xy.entity.Notice">
+        <result column="id" property="id"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="title" property="title"/>
+        <result column="content" property="content"/>
+    </resultMap>
+
+    <!-- General query result column -->
+    <sql id="Base_Column_List">
+        id,
+        create_time,
+        update_time,
+        title, content
+    </sql>
+
+
+    <select id="queryList" resultMap="BaseResultMap">
+        select
+        <include refid="Base_Column_List"/>
+        from xy_notice
+        <where>
+            <if test='title != null and title !=""'>
+                and title like concat('%',#{title},'%')
+            </if>
+        </where>
+        order by create_time desc
+        <if test="start != null and limit != null">
+            limit #{start}, #{limit}
+        </if>
+    </select>
+
+    <select id="queryTotal" resultType="java.lang.Integer">
+
+        select count(*) from xy_notice
+        <where>
+            <if test='title != null and title !=""'>
+                and title like concat('%',#{title},'%')
+            </if>
+        </where>
+    </select>
+
+    <select id="selectLatestList" resultMap="BaseResultMap">
+        select * from xy_notice order by create_time desc limit 0,#{limit}
+    </select>
+
+
+
+</mapper>

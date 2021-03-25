@@ -1,0 +1,167 @@
+body {
+	font-family: serif;
+}
+
+.header {
+	position: fixed;
+	display: block;
+	margin:0;
+	padding: 0;
+	width:100%;
+ 	background: rgb(120, 207, 186);
+	color: rgb(255, 255, 255);
+	height: 100px;
+	z-index: 1;
+	box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2)
+}
+
+
+
+
+/*positioning of slideshow */
+#slideshow {
+	width: 85%;
+	height: 28vw;
+	position: relative;
+}
+
+/* images for slideshow and increase size */
+#slideshow a img {
+	display: block;
+    width: 80%;
+    box-shadow: 3px 3px 10px rgb(74, 77, 85);
+    padding: 1.5vh;
+    align-content: center;
+    background-color: rgb(120, 207, 186);
+	height: 25vw;
+	margin-left: 10vw;
+	margin-right: auto;
+}
+
+/* Overlapping of images */
+#slideshow a {
+    left: 10%;
+    right: 10%;
+    top: 10px;
+    margin: 0 auto 10px auto;
+    position: absolute;
+}
+
+#slideshow a:nth-of-type(1) {
+    animation-name: fader;
+    animation-delay: 3.5s;
+    animation-duration: 1s;
+    z-index: 20;
+  }
+  #slideshow a:nth-of-type(2) {
+    z-index: 10;
+  }
+  #slideshow a:nth-of-type(n+3) {
+    display: none;
+  }
+
+  @keyframes fader {
+    from { opacity: 1.0; }
+    to   { opacity: 0.0; }
+  }
+
+.login {
+	position: fixed;
+	margin-top: 105px;
+	padding: 0;
+	padding-top: 5px;
+	padding-left: 4px;
+	width: 200px;
+	border-style: solid;
+	border-width: 3px;
+	border-color: rgb(120, 207, 186);
+	background-color: #f1f1f1;
+	height: 5%;
+	z-index: 1;
+}	
+
+.uploader {
+	position: fixed;
+	margin-top: 160px;
+	padding: 0;
+	padding-left: 4px;
+	width: 200px;
+	border-style: solid;
+	border-width: 3px;
+	border-color: rgb(120, 207, 186);
+	background-color: #f1f1f1;
+	height: 15%;
+	z-index: 1;
+}	
+.menu {
+	position: fixed;
+	margin-top: 290px;
+	padding: 0;
+	padding-left: 4px;
+	padding-bottom: 2px;
+	width: 200px;
+	border-style: solid;
+	border-width: 3px;
+	border-color: rgb(120, 207, 186);
+	background-color: #f1f1f1;
+	height: 55%;
+	z-index: 1;
+}	
+
+ul {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+  width: 200px;
+  background-color: #f1f1f1;
+}
+
+li a {
+  display: block;
+  color: #000;
+  padding: 8px 16px;
+  text-decoration: none;
+}
+
+/* Change the link color on hover */
+li a:hover {
+  background-color: #555;
+  color: white;
+}
+
+.pictures {
+	position: fixed;
+	margin-top: 105px;
+	margin-left: 213px;
+	padding: 10px;
+	width: 75%;
+	border-style: solid;
+	border-width: 3px;
+	border-color: rgb(120, 207, 186);
+	height: 76%;
+	z-index: 1;
+	overflow: auto;
+}
+
+.logo {
+	text-align: center;
+}
+
+.footer{
+	position: fixed;
+	left: 0;
+	width: 100%;
+	background-color: rgb(24, 31, 51);
+	color: #999;
+	text-align: center;
+	font-family: sans-serif;
+	bottom: 0;
+}
+
+.footer a {
+	color: #999;
+}
+
+.footer a:hover {
+	color: #fff;
+}

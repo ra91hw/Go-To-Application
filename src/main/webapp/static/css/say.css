@@ -1,0 +1,134 @@
+
+
+.plbox {
+    border: 2px solid #CCD4D9;
+    border-radius: 2px;
+    background-color: #FFF;
+    position: relative;
+    z-index: 10;
+}
+.plbox .saytext {
+    width: 97%;
+    resize: none;
+    overflow-x: hidden;
+    overflow-y: auto;
+    border: none;
+    line-height: 22px;
+    font-size: 14px;
+    outline: 0;
+    color: #333;
+    height: 68px;
+    padding: 5px;
+}
+
+.saytext img {
+    display: inline-block;
+    width: 25px !important;
+    height: 25px !important;
+}
+
+
+.plbox .pl_ctrl {
+    position: relative;
+    background-color: #FBFBFB;
+    height: 36px;
+    border-top: solid 1px #F2F2F2;
+    z-index: 5;
+}
+
+.pl_ctrl .emotion {
+    color: #666;
+    position: absolute;
+    left: -2px;
+    bottom: -2px;
+    height: 38px;
+    line-height: 38px;
+    padding: 0 10px;
+    cursor: pointer;
+}
+.pl_ctrl .emotion i {
+    font-size: 20px;
+}
+
+.pl_ctrl .pl_submit {
+    position: absolute;
+    right: -2px;
+    bottom: -2px;
+    background: #3399CC;
+    border: none;
+    border: 2px solid;
+    border-color: #3399CC;
+    border-left: none;
+    border-top: none;
+    padding: 0px;
+    width: 100px;
+    height: 38px;
+    color: #FFF;
+    outline: 0;
+    border-radius: 0 0 2px 0;
+    font-size: 16px;
+    z-index: 6;
+}
+.emoji_container {
+    display: none;
+    width: 100%;
+    position: relative;
+    background-color: #fff;
+    border: 1px solid #bfbfbf;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.176);
+}
+
+.emoji_content ul li a img {
+    vertical-align: middle;
+    max-width: 35px;
+    max-height: 35px;
+    display: inline-block;
+}
+
+.fbtime span {
+    float: right;
+    color: #999;
+    font-size: 12px;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.fbinfo{
+    font-size: 10px;
+}
+.fbinfo img{
+    display: inline-block;
+}
+
+.fb{
+    margin: 10px 10px;
+    border-bottom: #ececec 1px solid;
+}
+.fb ul {
+    margin-left: 50px;
+
+}
+.fb .pl-img{
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    float: left;
+    border-radius: 50%;
+}
+
+.fb .emoji_icon{
+    width: 30px;
+    height: 30px;
+}
+
+.reply{
+    float: right;
+    color: #3690cf;
+    cursor: pointer;
+    font-size: 15px;
+}
+
+.saytext:empty:before{
+    content: attr(placeholder)   /* element attribute*/
+    /*content: 'this is content';*/
+}

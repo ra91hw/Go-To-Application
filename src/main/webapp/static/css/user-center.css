@@ -1,0 +1,54 @@
+
+.whitebg {
+    background: #fff;
+    border-radius: 3px;
+    padding: 20px;
+    margin-bottom: 20px;
+    overflow: hidden;
+}
+
+
+.user-center .lbox{
+    width: 16%;float: left;overflow: hidden;
+}
+
+.user-center .rbox{
+    width:82.5%;float: right;overflow: hidden;
+}
+
+.user-info{
+    padding: 5px 30px 5px 30px;
+}
+.user-info img{
+    border-radius: 50%;
+    border: 1px solid #eee;
+    display: block;
+    text-align: center;
+    width: 100px;
+    height: 100px;
+}
+
+.user-info a{
+    text-align: center;
+    width: 100%;
+    display: block;
+    margin-top: 5px;
+    color: #00c1de;
+}
+
+.pagemenu li a {
+    display: block;
+    padding: 12px 20px;
+    font-size: 16px;
+    color: #999;
+    border-bottom: 1px solid #EEE;
+    background-color: #FFF;
+}
+
+.pagemenu .active a{
+    color: #00c1de;
+}
+
+.pagemenu li a:hover{
+    color: #00c1de;
+}

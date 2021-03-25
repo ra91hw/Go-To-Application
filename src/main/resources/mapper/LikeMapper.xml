@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.xiaoniucr.xy.mapper.LikeMapper">
+
+    <!-- General query result  -->
+    <resultMap id="BaseResultMap" type="com.xiaoniucr.xy.entity.Like">
+        <result column="id" property="id"/>
+        <result column="create_time" property="createTime"/>
+        <result column="update_time" property="updateTime"/>
+        <result column="user_id" property="userId"/>
+        <result column="album_id" property="albumId"/>
+    </resultMap>
+
+    <!-- General query result column -->
+    <sql id="Base_Column_List">
+        id,
+        create_time,
+        update_time,
+        user_id, album_id
+    </sql>
+    
+    <select id="selectByUserAndAlbum" resultMap="BaseResultMap">
+        select * from xy_like where user_id = #{userId} and album_id = #{albumId}
+    </select>
+
+    <delete id="deleteByAlbum">
+        delete from xy_like where album_id = #{albumId}
+    </delete>
+</mapper>

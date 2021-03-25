@@ -1,0 +1,171 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>demo</title>
+    <meta http-equiv="Content-Type" content="text/html;charset=utf-8"/>
+    <script type="text/javascript" charset="utf-8" src="ueditor.config.js"></script>
+    <script type="text/javascript" charset="utf-8" src="ueditor.all.min.js"> </script>
+    <script type="text/javascript" charset="utf-8" src="lang/zh-cn/zh-cn.js"></script>
+
+    <style type="text/css">
+        div{
+            width:100%;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <h1>demo</h1>
+    <script id="editor" type="text/plain" style="width:1024px;height:500px;"></script>
+</div>
+<div id="btns">
+    <div>
+        <button onclick="getAllHtml()">Get the content of the entire HTML</button>
+        <button onclick="getContent()">Get the content</button>
+        <button onclick="setContent()">Write content</button>
+        <button onclick="setContent(true)">Additional content</button>
+        <button onclick="getContentTxt()">Get plain text</button>
+        <button onclick="getPlainTxt()">Get formatted plain text</button>
+        <button onclick="hasContent()">Determine whether there is content</button>
+        <button onclick="setFocus()">Bring the editor to focus</button>
+        <button onmousedown="isFocus(event)">Whether the editor has the focus</button>
+        <button onmousedown="setblur(event)" >Editor loses focus</button>
+
+    </div>
+    <div>
+        <button onclick="getText()">Get the currently selected text</button>
+        <button onclick="insertHtml()">Insert the given content</button>
+        <button id="enable" onclick="setEnabled()">Can edit</button>
+        <button onclick="setDisabled()">Not editable</button>
+        <button onclick=" UE.getEditor('editor').setHide()">Hide editor</button>
+        <button onclick=" UE.getEditor('editor').setShow()">Show editor</button>
+        <button onclick=" UE.getEditor('editor').setHeight(300)">Set the height to 300 and turn off automatic height growth by default</button>
+    </div>
+
+    <div>
+        <button onclick="getLocalData()" >Get the contents of the draft box/button>
+        <button onclick="clearLocalData()" >Empty the draft box</button>
+    </div>
+
+</div>
+<div>
+    <button onclick="createEditor()">
+        Create editor</button>
+    <button onclick="deleteEditor()">
+        Delete editor</button>
+</div>
+
+<script type="text/javascript">
+
+    var ue = UE.getEditor('editor');
+
+
+    function isFocus(e){
+        alert(UE.getEditor('editor').isFocus());
+        UE.dom.domUtils.preventDefault(e)
+    }
+    function setblur(e){
+        UE.getEditor('editor').blur();
+        UE.dom.domUtils.preventDefault(e)
+    }
+    function insertHtml() {
+        var value = prompt('插入html代码', '');
+        UE.getEditor('editor').execCommand('insertHtml', value)
+    }
+    function createEditor() {
+        enableBtn();
+        UE.getEditor('editor');
+    }
+    function getAllHtml() {
+        alert(UE.getEditor('editor').getAllHtml())
+    }
+    function getContent() {
+        var arr = [];
+        arr.push("Use the editor.getContent() method to get the content of the editor");
+        arr.push("The content is：");
+        arr.push(UE.getEditor('editor').getContent());
+        alert(arr.join("\n"));
+    }
+    function getPlainTxt() {
+        var arr = [];
+        arr.push("Use the editor.getPlainTxt() method to get the formatted plain text content of the editor");
+        arr.push("The content is：");
+        arr.push(UE.getEditor('editor').getPlainTxt());
+        alert(arr.join('\n'))
+    }
+    function setContent(isAppendTo) {
+        var arr = [];
+        arr.push("editor.setContent('welcome ueditor')");
+        UE.getEditor('editor').setContent('welcome ueditor', isAppendTo);
+        alert(arr.join("\n"));
+    }
+    function setDisabled() {
+        UE.getEditor('editor').setDisabled('fullscreen');
+        disableBtn("enable");
+    }
+
+    function setEnabled() {
+        UE.getEditor('editor').setEnabled();
+        enableBtn();
+    }
+
+    function getText() {
+        //When you click the button, the editing area has lost the focus. If you use getText directly, you will not get the content, so you have to select it and then get the content
+        var range = UE.getEditor('editor').selection.getRange();
+        range.select();
+        var txt = UE.getEditor('editor').selection.getText();
+        alert(txt)
+    }
+
+    function getContentTxt() {
+        var arr = [];
+        arr.push("Use the editor.getContentTxt() method to get the editor's plain text content");
+        arr.push("The plain text content of the editor is：");
+        arr.push(UE.getEditor('editor').getContentTxt());
+        alert(arr.join("\n"));
+    }
+    function hasContent() {
+        var arr = [];
+        arr.push("Use the editor.hasContents() method to determine whether there is content in the editor");
+        arr.push("The judgment result is：");
+        arr.push(UE.getEditor('editor').hasContents());
+        alert(arr.join("\n"));
+    }
+    function setFocus() {
+        UE.getEditor('editor').focus();
+    }
+    function deleteEditor() {
+        disableBtn();
+        UE.getEditor('editor').destroy();
+    }
+    function disableBtn(str) {
+        var div = document.getElementById('btns');
+        var btns = UE.dom.domUtils.getElementsByTagName(div, "button");
+        for (var i = 0, btn; btn = btns[i++];) {
+            if (btn.id == str) {
+                UE.dom.domUtils.removeAttributes(btn, ["disabled"]);
+            } else {
+                btn.setAttribute("disabled", "true");
+            }
+        }
+    }
+    function enableBtn() {
+        var div = document.getElementById('btns');
+        var btns = UE.dom.domUtils.getElementsByTagName(div, "button");
+        for (var i = 0, btn; btn = btns[i++];) {
+            UE.dom.domUtils.removeAttributes(btn, ["disabled"]);
+        }
+    }
+
+    function getLocalData () {
+        alert(UE.getEditor('editor').execCommand( "getlocaldata" ));
+    }
+
+    function clearLocalData () {
+        UE.getEditor('editor').execCommand( "clearlocaldata" );
+        alert("Drafts emptied")
+    }
+</script>
+</body>
+</html>
