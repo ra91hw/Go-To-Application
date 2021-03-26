@@ -39,6 +39,17 @@ if(isset($_POST["unvote"])){
 	//Need to remove the vote for user = $userId, image = $_POST["unvote"]
 	mysqli_query($connection, "DELETE FROM t_votes WHERE userId = " . $userId . " AND photoId = " . $_POST["unvote"]);
 }
+
+//Follow or unfollow user.
+//If the relevant button was available to be clicked, then the record exists / is absent as required.
+if(isset($_POST["follow"])){
+	//Need to add a vote for followerId = $userId, followingId = $_POST["follow"]
+	mysqli_query($connection, "INSERT INTO t_follows (followerId, followingId) VALUES (" . $userId . ", " . $_POST["follow"] . ")");
+}
+if(isset($_POST["unfollow"])){
+	//Need to remove the follow for followerId = $userId, followingId = $_POST["unfollow"]
+	mysqli_query($connection, "DELETE FROM t_follows WHERE followerId = " . $userId . " AND followingId = " . $_POST["unfollow"]);
+}
 ?>
 
 <!DOCTYPE html>
@@ -201,7 +212,23 @@ if(isset($_POST["unvote"])){
 						
 						if($moderator){
 							echo "<form action='' method='post'><button name='ban' type='submit' value=" . $profileUser . ">Ban user</button></form> </td> </tr>";
+						}else if($loggedin){
+							//Moderator accounts are unable  to follow or unfollow users
+							//This is so that they retain access to a main page containing all of the photos uploaded
+							
+							//Create a button to toggle following this user
+							$alreadyFollowing = mysqli_num_rows(mysqli_query($connection, "SELECT * FROM t_follows WHERE followerId = " . $userId . " AND followingId = " . $profileUser . " LIMIT 1"));
+							echo "<form action = '' method = 'POST'>";
+							if ($alreadyFollowing){
+								//The logged in user is following this user
+								echo "<button name='unfollow' type='submit' value=" . $imageId . ">Unfollow</button>";
+							}else{
+								//User has not voted on this image
+								echo "<button name='follow' type='submit' value=" . $imageId . ">Follow</button>";
+							}
+							echo "</form>";
 						}
+						
 					?>
 					<hr>
 			

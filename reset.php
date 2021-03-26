@@ -94,12 +94,27 @@ if(isset($_POST['reset'])){
 		"DROP TABLE IF EXISTS t_votes CASCADE"
 	);
 	
-	//Initialise t_user
+	//Initialise t_votes
 	mysqli_query($connection,
 		"CREATE TABLE t_votes(
 		userId INTEGER, 
 		photoId INTEGER, 
 			PRIMARY KEY (userId, photoId))"
+	);
+	
+	// ------------------------
+	
+	//Drop t_follows
+	mysqli_query($connection,
+		"DROP TABLE IF EXISTS t_follows CASCADE"
+	);
+	
+	//Initialise t_follows
+	mysqli_query($connection,
+	"CREATE TABLE t_follows(
+	followerId INTEGER, 
+	followingId INTEGER, 
+	PRIMARY KEY (followerId, followingId))"
 	);
 	
 	// ------------------------

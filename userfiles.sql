@@ -35,6 +35,13 @@ CREATE TABLE t_votes(
 
 -- -------------------------------------------------------------------------------------------------------
 
+CREATE TABLE t_follows(
+	followerId INTEGER,
+	followingId INTEGER,
+	PRIMARY KEY (followerId, followingId))
+
+-- -------------------------------------------------------------------------------------------------------
+
 -- Calculate the scores.
 -- Score per user is calculated as:
 -- Σ(For all photos uploaded by that user, {(2*|{Votes on an image}|)/([number of days since upload]+1)})

@@ -160,12 +160,26 @@ if(isset($_GET["page"])){
 				
 						<h1>Recently uploaded:</h1>
 						<?php 
-							$query = "SELECT CONCAT(path, newFileName, '.', ext) AS imgname, t_files.id AS imgId, t_user.id AS userId, t_user.username AS username, t_user.avatar AS avatarExt FROM t_files JOIN t_user ON t_files.userId=t_user.id ORDER BY t_files.uploadtime DESC LIMIT 20 OFFSET " . ($page*20); //Gets 20 file names including extension
+							$query = "SELECT CONCAT(path, newFileName, '.', ext) AS imgname, t_files.id AS imgId, t_user.id AS userId, t_user.username AS username, t_user.avatar AS avatarExt FROM t_files JOIN t_user ON t_files.userId=t_user.id" 
+							
+							if($loggedin){
+								//If logged in, only display images posted by users that the account is following (and photos that the logged in user has uploaded)
+								//Posts by all users can be viewed by going to individual categories
+								$query .= " WHERE ";
+								//Get the list of users that the logged in user is following
+								$followingUsers = mysqli_query($connection, "SELECT followingId FROM t_follows WHERE followerId = " . $userId);
+								while $following = mysqli_fetch_array($followingUsers){
+									$query .= "followingId = " . $following[0] . " OR ";
+								}
+								//Include photos the current user has uploaded
+								$query .= "followingId = " . $userId;
+							}
+							
+							//Append the rest of the query
+							$query .= " ORDER BY t_files.uploadtime DESC LIMIT 20 OFFSET " . ($page*20); //Gets 20 file names including extension
 							
 							//Count the results of a different query (since the previous one is limited)
 							$photoCount = mysqli_num_rows(mysqli_query($connection, "SELECT CONCAT(newFileName, '.', ext) AS imgname, t_user.id AS userId, t_user.username AS username FROM t_files JOIN t_user ON t_files.userId=t_user.id"));
-							
-							//NOTE: Tags have NOT yet been implemented on uploading. Once the database supports it, using "SELECT CONCAT(newFileName, '.', ext) AS imgname FROM t_files WHERE [tag field name] = [desired tag name] LIMIT 20" should work. This can be copied across each of the pages on the menu at the side (i.e. for what is currently listed as Ocean, Forest, Skyline and Animals
 								
 								
 							if($photoCount > 0){
