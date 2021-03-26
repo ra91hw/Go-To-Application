@@ -163,6 +163,10 @@ if(isset($_GET["page"])){
 					echo "<h1>You're not on <a href='leaderboard.php'>the leaderboards</a> yet...</h1>";
 					echo "<h1>Post images, get votes, and soon you'll be there!</h1>";
 				}
+				//Followers isn't supposed to be a large part of the site, since it distracts from the gamification aspect of getting a the highest score.
+				//That's why the follower count is only shown privately.
+				//Likewise, following people is intended primarily as a way to see photos that are likely to be of interest, rather than expressing approval towards the user
+				echo "<h2>You have " . mysqli_fetch_array(mysqli_query($connection, "SELECT COUNT(*) FROM t_follows WHERE followingId=" . $userId ))[0] . " followers.</h2>";
 				
 					//Find the filename of the user's avatar
 					switch ($avExt){

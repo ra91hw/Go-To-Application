@@ -160,7 +160,7 @@ if(isset($_GET["page"])){
 				
 						<h1>Recently uploaded:</h1>
 						<?php 
-							$query = "SELECT CONCAT(path, newFileName, '.', ext) AS imgname, t_files.id AS imgId, t_user.id AS userId, t_user.username AS username, t_user.avatar AS avatarExt FROM t_files JOIN t_user ON t_files.userId=t_user.id" 
+							$query = "SELECT CONCAT(path, newFileName, '.', ext) AS imgname, t_files.id AS imgId, t_user.id AS userId, t_user.username AS username, t_user.avatar AS avatarExt FROM t_files JOIN t_user ON t_files.userId=t_user.id"; 
 							
 							if($loggedin){
 								//If logged in, only display images posted by users that the account is following (and photos that the logged in user has uploaded)
@@ -168,20 +168,22 @@ if(isset($_GET["page"])){
 								$query .= " WHERE ";
 								//Get the list of users that the logged in user is following
 								$followingUsers = mysqli_query($connection, "SELECT followingId FROM t_follows WHERE followerId = " . $userId);
-								while $following = mysqli_fetch_array($followingUsers){
-									$query .= "followingId = " . $following[0] . " OR ";
+								while ($following = mysqli_fetch_array($followingUsers)){
+									$query .= "userId = " . $following[0] . " OR ";
 								}
 								//Include photos the current user has uploaded
-								$query .= "followingId = " . $userId;
+								$query .= "userId = " . $userId;
 							}
 							
 							//Append the rest of the query
-							$query .= " ORDER BY t_files.uploadtime DESC LIMIT 20 OFFSET " . ($page*20); //Gets 20 file names including extension
+							$query .= " ORDER BY t_files.uploadtime DESC";
 							
-							//Count the results of a different query (since the previous one is limited)
-							$photoCount = mysqli_num_rows(mysqli_query($connection, "SELECT CONCAT(newFileName, '.', ext) AS imgname, t_user.id AS userId, t_user.username AS username FROM t_files JOIN t_user ON t_files.userId=t_user.id"));
+							//Count the results of a different query (since the final version of the query is limited)
+							$photoCount = mysqli_num_rows(mysqli_query($connection, $query));
 								
-								
+							//Edit the final query
+							$query .= " LIMIT 20 OFFSET " . ($page*20); 				
+							
 							if($photoCount > 0){
 								$result = mysqli_query($connection, $query);
 
