@@ -36,6 +36,7 @@ if(isset($_GET["page"])){
 		$userId =$_COOKIE["userId"];
 		$result = mysqli_query($connection, "SELECT username FROM t_user WHERE id = " . $userId);
 		$username = mysqli_fetch_array($result)[0];
+		$moderator = mysqli_fetch_array(mysqli_query($connection, "SELECT moderator FROM t_user WHERE id = " . $userId))[0];
 	} else{
 		$loggedin = False;
 	}
@@ -162,8 +163,8 @@ if(isset($_GET["page"])){
 						<?php 
 							$query = "SELECT CONCAT(path, newFileName, '.', ext) AS imgname, t_files.id AS imgId, t_user.id AS userId, t_user.username AS username, t_user.avatar AS avatarExt FROM t_files JOIN t_user ON t_files.userId=t_user.id"; 
 							
-							if($loggedin){
-								//If logged in, only display images posted by users that the account is following (and photos that the logged in user has uploaded)
+							if($loggedin && !$moderator){
+								//If logged in as a normal account, only display images posted by users that the account is following (and photos that the logged in user has uploaded)
 								//Posts by all users can be viewed by going to individual categories
 								$query .= " WHERE ";
 								//Get the list of users that the logged in user is following
