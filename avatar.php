@@ -132,7 +132,7 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 				<div class="upload">
 					<h3 style="line-height: 0.7em;">Upload a Photo</h3>
 					<form action="upload.php" method="post" enctype="multipart/form-data">
-						<input type="file" name="fileToUpload" onchange="form.submit()" id="fileToUpload">
+						<input type="file" name="fileToUpload" onchange="" id="fileToUpload">
 						<label for="cars">Select category:</label>
 						<select id="categories" name="categories">
 							<option value="landscape">Landscape</option>
@@ -144,7 +144,7 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 							<option value="messages">Messages</option>
 							<option value="messages" selected>Other</option>
 						</select><br>
-						<input type="submit" value="Go">
+						<input type="submit" onclick="getElementById('imageUpload').value='Uploading...';" value="Go" id="imageUpload">
 					</form>
 				</div>
 			</div>

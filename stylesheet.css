@@ -16,8 +16,6 @@ body {
 }
 
 
-
-
 /*positioning of slideshow */
 #slideshow {
 	width: 85%;
@@ -36,6 +34,60 @@ body {
 	height: 25vw;
 	margin-left: 10vw;
 	margin-right: auto;
+}
+
+/* Make corrections for mobile users */
+@media screen and (max-width: 800px) {
+	.pictures{
+		position: fixed;
+		margin-top: 15px !important;
+		margin-left: 4% !important;
+		/*margin-right: auto !important;*/
+		padding: 10px;
+		width: 89% !important;
+		height: 70% !important;
+		padding-top: 0% !important;
+		position: static !important;
+		margin-bottom: 20% !important;
+	}
+	
+	.header{
+		position:relative !important;
+		margin-top:0px !important;
+	}
+	
+	.pictures img{
+		/*Since the div the pictures are in is decreased, these need to be too */
+		max-width: 92% !important;
+		/* Fix the height to keep the proportions accurate */
+		height: auto !important;
+	}
+
+	.login{
+		margin-top:10px !important;
+		width: 92% !important;
+		margin-left: 4% !important;
+		position: relative !important;
+	}
+	.uploader, .menu, #Popular ul {
+		width: 92% !important;
+		position: relative !important;
+		margin-top: 10px !important;
+		margin-left: 4% !important;
+		/*display: none !important;*/
+		/*max-width: 0px !important;*/
+	}
+
+	.footer{
+		/*display:none;*/
+		max-height: 10% !important;
+	}
+	
+	#slideshow{
+		/* Best to just hide the slideshow, since mobile screens don't have much room and it doesn't add too much*/
+		display: none !important;
+		height: 0px;
+	}
 }
 
 /* Overlapping of images */
