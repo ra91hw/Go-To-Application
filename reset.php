@@ -24,9 +24,9 @@ if(isset($_POST['reset'])){
 		}
 	}
 
-	//Delete uploaded photographs
+	//Delete uploaded photographs (keep the logo, and the test image)
 	foreach(glob("uploads/*") as $file ) {
-		if(basename($file) != "logo.png"){
+		if(basename($file) != "logo.png" && basename($file) != "test.png"){
 			unlink($file);
 		}
 	}
@@ -134,8 +134,48 @@ if(isset($_POST['reset'])){
 				GROUP BY t_votes.photoId) AS photoScores;"
 	);
 	
+	
 	//The database has now been reset.
 	
+	// ------------------------
+	
+	//Add in test data
+	//A normal user
+	mysqli_query($connection, 
+	"INSERT INTO t_user 
+	(id, username, password, email, avatar, moderator) 
+	VALUES ('777', 'avery', '" . password_hash("Christian Lion Hearted Man Will Show You", PASSWORD_DEFAULT) . "', 'example@website.com', 0, 0)");
+	//An admin user
+	mysqli_query($connection, 
+	"INSERT INTO t_user 
+	(id, username, password, email, avatar, moderator) 
+	VALUES ('13', 'admin', '" . password_hash("password123123", PASSWORD_DEFAULT) . "', 'example@email.com', 0, 1)"
+	);
+	//A photo
+	mysqli_query($connection, 
+	"INSERT INTO t_files 
+	(id, oldFileName, newFileName, ext, path, uploadtime, category, userId) 
+	VALUES (15, 'test.png', 'test', 'png', 'uploads/', NOW(), 'water', 777)"
+	);
+	//A vote
+	mysqli_query($connection, 
+	"INSERT INTO t_votes (userId, photoId) VALUES (13, 15)"
+	);
+	//A follow (probably not necessary)
+	mysqli_query($connection, 
+	"INSERT INTO t_follows (followerId, followingId) VALUES (777, 13)"
+	);
+	//Create a php file for the new users' profiles, the same way as in login.php
+		$newFile = fopen("avery.php", "w");
+		$templateFile = fopen("part2.txt", "r") or die("Unable to open file!");
+		fwrite($newFile, "<?php\r\n\$profileUser = 777" . fread($templateFile, filesize("part2.txt")));
+		fclose($templateFile);
+		fclose($newFile);
+		$newFile = fopen("admin.php", "w");
+		$templateFile = fopen("part2.txt", "r") or die("Unable to open file!");
+		fwrite($newFile, "<?php\r\n\$profileUser = 13" . fread($templateFile, filesize("part2.txt")));
+		fclose($templateFile);
+		fclose($newFile);
 	//Remember that the deletion has been successful
 	$deleted = true;
 
@@ -153,7 +193,7 @@ if(isset($_POST['reset'])){
 <p>WARNING! If you click the below button, all existing data will be lost / reset. Only click this if you are fine with losing all data.</p>
 <p>(This feature should <b>never</b> be accessible to anyone outside of testing purposes.)</p>
 <form action="" method="post">
-   <input id="reset" type="submit" name="reset" value="Reset">
+   <input id="reset" type="submit" onclick="getElementById('reset').value='Resetting...';" name="reset" value="Reset">
 </form> 
 <?php
 	if($deleted){

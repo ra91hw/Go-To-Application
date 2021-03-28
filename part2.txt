@@ -90,6 +90,7 @@ if(isset($_POST["unfollow"])){
 				
 			}else{
 				$loggedin = false;
+				$moderator = false;
 			}
 			
 			//Delete image if a moderator has requested it
@@ -108,8 +109,12 @@ if(isset($_POST["unfollow"])){
 				$profilePage = mysqli_fetch_array(mysqli_query($connection, "SELECT username FROM t_user WHERE t_user.id = " . $_POST["ban"] . " LIMIT 1"))[0] . ".php";
 				//Delete it locally
 				unlink($profilePage);
-				//Delete the record of it from the database
+				//Delete all records of them from the database (keep photo files)
+				mysqli_query($connection, "DELETE t_votes.* FROM t_votes JOIN t_files ON t_votes.photoId = t_files.id WHERE t_files.userId = " . $_POST["ban"]);
 				mysqli_query($connection, "DELETE FROM t_files WHERE userId = " . $_POST["ban"]);
+				mysqli_query($connection, "DELETE FROM t_follows WHERE followerId = " . $_POST["ban"]);
+				mysqli_query($connection, "DELETE FROM t_follows WHERE followingId = " . $_POST["ban"]);
+				mysqli_query($connection, "DELETE FROM t_votes WHERE userId = " . $_POST["ban"]);
 				mysqli_query($connection, "DELETE FROM t_user WHERE t_user.id = " . $_POST["ban"]);
 			}
 		?>
@@ -139,7 +144,7 @@ if(isset($_POST["unfollow"])){
 				<div class="upload">
 					<h3 style="line-height: 0.7em;">Upload a Photo</h3>
 					<form action="upload.php" method="post" enctype="multipart/form-data">
-						<input type="file" name="fileToUpload" onchange="form.submit()" id="fileToUpload">
+						<input type="file" name="fileToUpload" onchange="" id="fileToUpload">
 						<label for="cars">Select category:</label>
 						<select id="categories" name="categories">
 							<option value="landscape">Landscape</option>
@@ -151,7 +156,7 @@ if(isset($_POST["unfollow"])){
 							<option value="messages">Messages</option>
 							<option value="messages" selected>Other</option>
 						</select><br>
-						<input type="submit" value="Go">
+						<input type="submit" onclick="getElementById('imageUpload').value='Uploading...';" value="Go" id="imageUpload">
 					</form>
 				</div>
 			</div>
