@@ -36,8 +36,10 @@ if(isset($_GET["page"])){
 		$userId =$_COOKIE["userId"];
 		$result = mysqli_query($connection, "SELECT username FROM t_user WHERE id = " . $userId);
 		$username = mysqli_fetch_array($result)[0];
+		$moderator = mysqli_fetch_array(mysqli_query($connection, "SELECT moderator FROM t_user WHERE id = " . $userId))[0];
 	} else{
 		$loggedin = False;
+		$moderator = False;
 	}
 	
 	//Vote or unvote images.
@@ -53,7 +55,7 @@ if(isset($_GET["page"])){
 	
 	?>
 	<head>
-		<title>Indoors</title>
+		<title>All Photos</title>
 		<!-- basic meta data for webpage -->
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale: 1.0">
@@ -148,17 +150,16 @@ if(isset($_GET["page"])){
 		<section id="content">
 			<div id="pictures" class="pictures">
 				<div class="content">
-						<h1>The outdoors may be great, but there's also a lot to see inside!</h1>
-						<h2>Recently uploaded indoors photos:</h2>
+					<h1>All recently uploaded photos:</h1>
 						<?php 
-							$query = "SELECT CONCAT(path, newFileName, '.', ext) AS imgname, t_files.id AS imgId, t_user.id AS userId, t_user.username AS username, t_user.avatar AS avatarExt FROM t_files JOIN t_user ON t_files.userId=t_user.id WHERE category='indoors' ORDER BY t_files.uploadtime DESC LIMIT 20 OFFSET " . ($page*20); //Gets 20 file names including extension
+							$query = "SELECT CONCAT(path, newFileName, '.', ext) AS imgname, t_files.id AS imgId, t_user.id AS userId, t_user.username AS username, t_user.avatar AS avatarExt FROM t_files JOIN t_user ON t_files.userId=t_user.id ORDER BY t_files.uploadtime DESC";
 							
-							//Count the results of a different query (since the previous one is limited)
-							$photoCount = mysqli_num_rows(mysqli_query($connection, "SELECT CONCAT(newFileName, '.', ext) AS imgname, t_user.id AS userId, t_user.username AS username FROM t_files JOIN t_user ON t_files.userId=t_user.id WHERE category='indoors'"));
+							//Count the results of a different query (since the final version of the query is limited)
+							$photoCount = mysqli_num_rows(mysqli_query($connection, $query));
+								
+							//Edit the final query
+							$query .= " LIMIT 20 OFFSET " . ($page*20); 				
 							
-							//NOTE: Tags have NOT yet been implemented on uploading. Once the database supports it, using "SELECT CONCAT(newFileName, '.', ext) AS imgname FROM t_files WHERE [tag field name] = [desired tag name] LIMIT 20" should work. This can be copied across each of the pages on the menu at the side (i.e. for what is currently listed as Ocean, Forest, Skyline and Animals
-								
-								
 							if($photoCount > 0){
 								$result = mysqli_query($connection, $query);
 
@@ -230,6 +231,7 @@ if(isset($_GET["page"])){
 							//Finished with the database
 							mysqli_close($connection); ?>
 						<!--<h1> Content from Database above </h1>!-->
+						</div>
 				</div>
 			</div>
 		</section>	

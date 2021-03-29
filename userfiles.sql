@@ -23,6 +23,7 @@ CREATE TABLE t_user(
 	password CHAR(60),
 	email VARCHAR(80),
 	avatar TINYINT(4),
+	moderator BOOLEAN,
 		PRIMARY KEY (id));
 
 

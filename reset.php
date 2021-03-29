@@ -32,7 +32,7 @@ if(isset($_POST['reset'])){
 	}
 
 	//Define the permanent PHP pages to keep
-	$permanentPhp = array('avatar.php', 'index.php', 'leaderboard.php', 'login.php', 'profile.php', 'reset.php', 'tos.php', 'upload.php', 'water.php', 'landscape.php', 'structures.php', 'indoors.php', 'animals.php', 'wilderness.php', 'other.php', );
+	$permanentPhp = array('avatar.php', 'index.php', 'leaderboard.php', 'login.php', 'profile.php', 'reset.php', 'tos.php', 'upload.php', 'water.php', 'landscape.php', 'structures.php', 'indoors.php', 'animals.php', 'wilderness.php', 'other.php', 'messages.php', 'all.php');
 
 	//Get rid of user pages
 	foreach(glob("*.php") as $file) {

@@ -107,7 +107,7 @@ if(isset($_GET["page"])){
 				<div class="upload">
 					<h3 style="line-height: 0.7em;">Upload a Photo</h3>
 					<form action="upload.php" method="post" enctype="multipart/form-data">
-						<input type="file" name="fileToUpload" onchange="form.submit()" id="fileToUpload">
+						<input type="file" name="fileToUpload" onchange="" id="fileToUpload">
 						<label for="cars">Select category:</label>
 						<select id="categories" name="categories">
 							<option value="landscape">Landscape</option>
@@ -116,9 +116,10 @@ if(isset($_GET["page"])){
 							<option value="indoors">Indoors</option>
 							<option value="animals">Animals</option>
 							<option value="wilderness">Wilderness</option>
+							<option value="messages">Messages</option>
 							<option value="other" selected>Other</option>
 						</select><br>
-						<input type="submit" value="Go">
+						<input type="submit" onclick="getElementById('imageUpload').value='Uploading...';" value="Go" id="imageUpload">
 					</form>
 				</div>
 			</div>
@@ -127,14 +128,17 @@ if(isset($_GET["page"])){
 		<section id="Popular">
 			<div id="menu" class="menu">
 				<div class="popular">
+					<ul><li><a style="" href="leaderboard.php">Leaderboard</a></li></ul>
 					<h3>Categories</h3>
 					<ul>
+						<li><a href="all.php">All</a></li>
 						<li><a href="landscape.php">Landscapes</a></li>
 						<li><a href="water.php">Water</a></li>
 						<li><a href="structures.php">Structures</a></li>
 						<li><a href="indoors.php">Indoors</a></li>
 						<li><a href="animals.php">Animals</a></li>
 						<li><a href="wilderness.php">Wilderness</a></li>
+						<li><a href="messages.php">Messages</a></li>
 						<li><a href="other.php">Other</a></li>
 					</ul>
 				</div>

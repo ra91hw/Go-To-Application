@@ -3,7 +3,9 @@
 -- PHOTOS (IN uploads/) AND AVATARS (IN avatars/) MUST BE DELETED SEPERATELY
 -- (NOTE: This doesn't actually remove the tables, but just the content, so the Go-To website is still usable)
 
+--BEST NOT TO USE THIS THOUGH - USE reset.php INSTEAD
+
 TRUNCATE TABLE t_files;
 TRUNCATE TABLE t_user;
 TRUNCATE TABLE t_votes;
-DROP VIEW t_scores;
+TRUNCATE TABLE t_follows;

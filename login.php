@@ -54,6 +54,8 @@ $failedsignup = false;
 if(isset($_POST["email"]) && isset($_POST["username"]) && isset($_POST["password"])) {
 	$proposedName = strtolower($_POST["username"]);
 	$failedsignup = false;
+	//Define the names reserved for PHP pages
+	$permanentPhp = array('avatar', 'index', 'leaderboard', 'login', 'profile', 'reset', 'tos', 'upload', 'water', 'landscape', 'structures', 'indoors', 'animals', 'wilderness', 'other', 'all');
 	echo mysqli_error($connection);
 	//Verify username and email are valid, and that the username isn't in use
 	if(!preg_match("/^[a-z0-9]+$/",$proposedName)){
@@ -69,7 +71,7 @@ if(isset($_POST["email"]) && isset($_POST["username"]) && isset($_POST["password
 		//No upper limit. The hashing function will provide a 60 character hashed password regardless
 		$failedsignup = true;
 		$signuperror = "Password is too short! Please make sure it is at least 6 characters long.";
-	}elseif (mysqli_num_rows(mysqli_query($connection, "SELECT id FROM t_user WHERE username = '" . $proposedName . "' LIMIT 1")) == 0 && $proposedName != "index" && $proposedName != "login" && $proposedName != "profile" && $proposedName != "avatar" && $proposedName != "tos" && $proposedName != "upload" ){
+	}elseif (mysqli_num_rows(mysqli_query($connection, "SELECT id FROM t_user WHERE username = '" . $proposedName . "' LIMIT 1")) == 0 && !in_array($proposedName, $permanentPhp) ){
 		//Username is free
 		//$row = mysqli_fetch_row($result);
 
@@ -189,7 +191,7 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 							<option value="animals">Animals</option>
 							<option value="wilderness">Wilderness</option>
 							<option value="messages">Messages</option>
-							<option value="messages" selected>Other</option>
+							<option value="other" selected>Other</option>
 						</select><br>
 						<input type="submit" onclick="getElementById('imageUpload').value='Uploading...';" value="Go" id="imageUpload">
 					</form>
@@ -200,8 +202,10 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 		<section id="Popular">
 			<div id="menu" class="menu">
 				<div class="popular">
+					<ul><li><a style="" href="leaderboard.php">Leaderboard</a></li></ul>
 					<h3>Categories</h3>
 					<ul>
+						<li><a href="all.php">All</a></li>
 						<li><a href="landscape.php">Landscapes</a></li>
 						<li><a href="water.php">Water</a></li>
 						<li><a href="structures.php">Structures</a></li>
@@ -209,7 +213,7 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 						<li><a href="animals.php">Animals</a></li>
 						<li><a href="wilderness.php">Wilderness</a></li>
 						<li><a href="messages.php">Messages</a></li>
-						<li><a href="messages.php">Other</a></li>
+						<li><a href="other.php">Other</a></li>
 					</ul>
 				</div>
 			</div>
@@ -224,7 +228,7 @@ integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9
 				<form action = "" method = "POST" name = "signUp">
 				Email Address: <input type = "text" placeholder="example@email.com" name = "email" required><br>
 				Username: <input type = "text" placeholder="Enter Username" name = "username" required><br>
-				Password: <input type = "password" placeholder="**********" name = "password" required><br>
+				Password (must be at least 6 characters): <input type = "password" placeholder="**********" name = "password" required><br>
 				I have read and agreed to the <a href="tos.php" target="_blank">terms of service:</a> <input type="checkbox" name="tos" required><br>
 				<input type = "submit">
 				</form>

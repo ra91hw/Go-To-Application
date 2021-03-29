@@ -131,7 +131,7 @@ if(isset($_GET["page"])){
 							<option value="animals">Animals</option>
 							<option value="wilderness">Wilderness</option>
 							<option value="messages">Messages</option>
-							<option value="messages" selected>Other</option>
+							<option value="other" selected>Other</option>
 						</select><br>
 						<input type="submit" onclick="getElementById('imageUpload').value='Uploading...';" value="Go" id="imageUpload">
 					</form>
@@ -142,8 +142,10 @@ if(isset($_GET["page"])){
 		<section id="Popular">
 			<div id="menu" class="menu">
 				<div class="popular">
+					<ul><li><a style="" href="leaderboard.php">Leaderboard</a></li></ul>
 					<h3>Categories</h3>
 					<ul>
+						<li><a href="all.php">All</a></li>
 						<li><a href="landscape.php">Landscapes</a></li>
 						<li><a href="water.php">Water</a></li>
 						<li><a href="structures.php">Structures</a></li>
@@ -151,7 +153,7 @@ if(isset($_GET["page"])){
 						<li><a href="animals.php">Animals</a></li>
 						<li><a href="wilderness.php">Wilderness</a></li>
 						<li><a href="messages.php">Messages</a></li>
-						<li><a href="messages.php">Other</a></li>
+						<li><a href="other.php">Other</a></li>
 					</ul>
 				</div>
 			</div>
